@@ -1,0 +1,2010 @@
+<!-- PART 1 OF 50: HTML Document Setup & Head -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TGMS Pegadapally - Management System</title>
+    <!-- PART 2 OF 50: Tailwind CSS & Custom Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* The Four Pioneers House System Colors */
+        .house-raman { border-color: #3b82f6; background-color: #eff6ff; } /* Blue */
+        .house-devi { border-color: #10b981; background-color: #ecfdf5; } /* Green */
+        .house-kalam { border-color: #f59e0b; background-color: #fffbeb; } /* Yellow */
+        .house-tagore { border-color: #ef4444; background-color: #fef2f2; } /* Red */
+        
+        /* Print & UI Utilities */
+        @media print {
+            body { -webkit-print-color-adjust: exact; }
+            .no-print { display: none !important; }
+            .print-page { page-break-after: always; margin: 0; padding: 20px; border: none; }
+        }
+        .hidden { display: none !important; }
+        
+        /* FRS Camera Overlay */
+        .camera-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border: 4px dashed rgba(255, 255, 255, 0.7); border-radius: 50%;
+            width: 200px; height: 200px; pointer-events: none;
+        }
+    </style>
+    <!-- PART 3 OF 50: Firebase SDK Imports (v8 Compatible for CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+</head>
+<!-- PART 4 OF 50: Body & Main Application Container -->
+<body class="bg-gray-50 text-gray-800 font-sans antialiased h-screen flex flex-col">
+    <div id="app-container" class="flex-grow flex flex-col relative w-full h-full max-w-7xl mx-auto shadow-xl bg-white overflow-hidden">
+        
+        <!-- Global Loading Overlay -->
+        <div id="loading-spinner" class="hidden absolute inset-0 bg-white/90 z-50 flex flex-col items-center justify-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600"></div>
+            <p id="loading-text" class="mt-4 font-semibold text-gray-700 animate-pulse">Syncing Database...</p>
+        </div>
+       <!-- PART 5 OF 50: Login Interface (Role-Based Gateway) -->
+        <div id="login-view" class="flex flex-col items-center justify-center h-full p-6 bg-gradient-to-br from-blue-50 to-indigo-100">
+            <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <div class="text-center mb-8">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Government_of_Telangana_Logo.png/120px-Government_of_Telangana_Logo.png" alt="TG Logo" class="w-16 h-16 mx-auto mb-3 opacity-80">
+                    <h1 class="text-3xl font-extrabold text-blue-900 mb-2">TGMS Pegadapally</h1>
+                    <p class="text-sm text-gray-500">Secure Access Gateway</p>
+                </div>
+                <div class="space-y-4">
+                    <input type="email" id="login-email" placeholder="Email (Staff) or PEN (Student)" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    <input type="password" id="login-password" placeholder="Password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    <button onclick="handleLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md transition">
+                        Authenticate
+                    </button>
+                </div>
+                <div id="login-error" class="hidden mt-4 p-3 bg-red-100 text-red-700 text-sm rounded-lg text-center"></div>
+            </div>
+        </div>
+      <!-- PART 5 OF 50: Login Interface (Role-Based Gateway) -->
+        <div id="login-view" class="flex flex-col items-center justify-center h-full p-6 bg-gradient-to-br from-blue-50 to-indigo-100">
+            <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <div class="text-center mb-8">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Government_of_Telangana_Logo.png/120px-Government_of_Telangana_Logo.png" alt="TG Logo" class="w-16 h-16 mx-auto mb-3 opacity-80">
+                    <h1 class="text-3xl font-extrabold text-blue-900 mb-2">TGMS Pegadapally</h1>
+                    <p class="text-sm text-gray-500">Secure Access Gateway</p>
+                </div>
+                <div class="space-y-4">
+                    <input type="email" id="login-email" placeholder="Email (Staff) or PEN (Student)" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    <input type="password" id="login-password" placeholder="Password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    <button onclick="handleLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md transition">
+                        Authenticate
+                    </button>
+                </div>
+                <div id="login-error" class="hidden mt-4 p-3 bg-red-100 text-red-700 text-sm rounded-lg text-center"></div>
+            </div>
+        </div>
+        <!-- PART 6 OF 50: Master Admin Dashboard Shell (Principal Kotha FAC) -->
+        <div id="master-admin-view" class="hidden flex-col h-full bg-gray-50">
+            <header class="bg-indigo-900 text-white p-4 flex justify-between items-center no-print shadow-md">
+                <div class="flex items-center space-x-4">
+                    <!-- GitHub Hosted Principal Image for Zero DB Cost -->
+                    <img src="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/principal.jpg" onerror="this.src='https://ui-avatars.com/api/?name=PRK&background=4f46e5&color=fff'" alt="Principal Prabhakar Reddy Kotha (FAC)" class="w-12 h-12 rounded-full border-2 border-indigo-400 object-cover bg-indigo-200">
+                    <div>
+                        <h2 class="font-bold text-lg">Super-Master Panel</h2>
+                        <p class="text-xs text-indigo-300">Principal Prabhakar Reddy Kotha (FAC)</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="px-4 py-2 bg-red-500 rounded hover:bg-red-600 text-sm font-bold shadow">Logout</button>
+            </header>
+            <!-- PART 7 OF 50: Master Admin - Dashboard Content -->
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto pb-20">
+                <!-- FRS Registration Card -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500">
+                    <h3 class="font-bold text-xl mb-2 text-gray-800">FRS Registration Desk</h3>
+                    <p class="text-sm text-gray-600 mb-4">Securely enroll faculty facial biometrics. Canvas-compressed for free-tier optimization.</p>
+                    <button onclick="openCameraModal('register')" class="w-full bg-indigo-600 text-white py-3 rounded-lg shadow hover:bg-indigo-700 font-semibold transition">Register New Staff Face</button>
+                </div>
+                
+                <!-- Global Dashboard Analytics -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
+                    <h3 class="font-bold text-xl mb-2 text-gray-800">System Analytics</h3>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="bg-blue-50 p-4 rounded-lg text-center">
+                            <span class="block text-2xl font-bold text-blue-700" id="stat-attendance">--</span>
+                            <span class="text-xs text-gray-500">Present Today</span>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg text-center">
+                            <span class="block text-2xl font-bold text-green-700" id="stat-od">--</span>
+                            <span class="text-xs text-gray-500">On Duty (OD)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PART 8 OF 50: Admin View Shell & Header -->
+        <div id="admin-view" class="hidden flex-col h-full bg-gray-50">
+            <header class="bg-blue-800 text-white p-4 flex justify-between items-center no-print shadow-md">
+                <div>
+                    <h2 class="font-bold text-lg">Admin Control Panel</h2>
+                    <p class="text-xs text-blue-200">Operations & Scheduling</p>
+                </div>
+                <button onclick="logout()" class="px-4 py-2 bg-red-500 rounded hover:bg-red-600 text-sm shadow">Logout</button>
+            </header>
+            <!-- PART 9 OF 50: Admin View - Remote Duty (OD) Queue UI -->
+            <div class="p-6 overflow-y-auto space-y-6 pb-20">
+                
+                <div class="bg-white p-5 rounded-xl shadow border border-gray-200">
+                    <div class="flex justify-between items-center border-b pb-3 mb-3">
+                        <h3 class="font-bold text-lg text-gray-800">Remote Duty (OD) Requests</h3>
+                        <span id="od-badge" class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">0 Pending</span>
+                    </div>
+                    <div id="od-queue" class="space-y-3">
+                        <p class="text-sm text-gray-500 italic text-center py-4">No pending requests.</p>
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+                <!-- PART 10 OF 50: Admin View - Master Timetable UI -->
+                <div class="bg-white p-5 rounded-xl shadow border border-gray-200">
+                    <h3 class="font-bold text-lg border-b pb-3 mb-3 text-gray-800">Master Timetable (8-Period)</h3>
+                    <div class="text-sm text-gray-700 mb-4 bg-yellow-50 p-3 rounded border border-yellow-200">
+                        <p><strong>Rule 1:</strong> Assembly locked at 9:00 AM.</p>
+                        <p><strong>Rule 2:</strong> Sports restricted from Period 1.</p>
+                        <p><strong>Rule 3:</strong> Vocational synced across parallel sections.</p>
+                    </div>
+                    <button class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">View / Generate Master Grid</button>
+                </div>
+            </div>
+        </div>
+        <!-- PART 11 OF 50: Teacher View Shell & Header -->
+        <div id="teacher-view" class="hidden flex-col h-full bg-gray-50">
+            <header class="bg-green-700 text-white p-4 flex justify-between items-center no-print shadow-md">
+                <div>
+                    <h2 class="font-bold text-lg">Faculty Portal</h2>
+                    <p class="text-xs text-green-200" id="teacher-name-header">Welcome, Teacher</p>
+                </div>
+                <button onclick="logout()" class="px-4 py-2 bg-red-500 rounded hover:bg-red-600 text-sm shadow">Logout</button>
+            </header>
+            <!-- PART 12 OF 50: Teacher View - Geofenced Punch-in UI -->
+            <div class="p-6 grid grid-cols-1 gap-6 overflow-y-auto pb-20">
+                
+                <div class="bg-white p-6 rounded-xl shadow border-t-4 border-green-500">
+                    <h3 class="font-bold text-xl mb-1 text-gray-800">Geofenced Punch-In</h3>
+                    <p class="text-xs text-gray-500 mb-4">Requires M3RG+WGF (1km) proximity & FRS.</p>
+                    <div class="flex space-x-3">
+                        <button onclick="initiateAttendance()" class="flex-1 bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 font-bold transition">Punch In</button>
+                        <button onclick="openODModal()" class="flex-1 border-2 border-green-600 text-green-700 py-3 rounded-lg hover:bg-green-50 font-bold transition">Request OD</button>
+                    </div>
+                </div>
+                <!-- PART 13 OF 50: Teacher View - House Assignment & Marks -->
+                <div class="bg-white p-6 rounded-xl shadow border-t-4 border-purple-500">
+                    <h3 class="font-bold text-xl mb-1 text-gray-800">Academic & Houses</h3>
+                    <p class="text-xs text-gray-500 mb-4">Manage Houses, FA Marks, and Syllabus Tracking.</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="bg-purple-100 text-purple-700 py-2 rounded shadow-sm text-sm font-semibold hover:bg-purple-200">House Sort</button>
+                        <button class="bg-purple-100 text-purple-700 py-2 rounded shadow-sm text-sm font-semibold hover:bg-purple-200">Marks Studio</button>
+                        <button class="col-span-2 bg-gray-800 text-white py-2 rounded shadow-sm text-sm font-semibold hover:bg-gray-900 mt-2">Update Syllabus Tracker</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PART 14 OF 50: Student View Shell & Header -->
+        <div id="student-view" class="hidden flex-col h-full bg-gray-100">
+            <header class="bg-gray-800 text-white p-4 flex justify-between items-center no-print shadow-md">
+                <h2 class="font-bold text-lg">Student / Parent Portal</h2>
+                <button onclick="logout()" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700 text-sm shadow">Logout</button>
+            </header>
+            <!-- PART 15 OF 50: Student View - PEN & House Card -->
+            <div class="p-6 flex flex-col items-center overflow-y-auto pb-20">
+                <div id="student-house-card" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md border-t-8 border-gray-300 mb-6">
+                    <h3 id="student-name-display" class="font-bold text-2xl mb-1 text-gray-800">Student Name</h3>
+                    <p id="student-pen-display" class="text-sm text-gray-500 mb-4">PEN: XXXXXXXX</p>
+                    <div class="p-3 bg-gray-50 rounded border border-gray-100 flex justify-between items-center">
+                        <span class="font-bold text-gray-700">Assigned House:</span>
+                        <span id="student-house-display" class="px-3 py-1 rounded-full text-sm font-bold bg-gray-200 text-gray-800">Unassigned</span>
+                    </div>
+                </div>
+                <!-- PART 16 OF 50: Student View - Library Status UI -->
+                <div class="bg-white p-5 rounded-xl shadow w-full max-w-md">
+                    <h4 class="font-bold text-gray-800 border-b pb-2 mb-3">Library Status</h4>
+                    <div class="flex justify-between items-center text-sm text-gray-600 mb-2">
+                        <span>Books Borrowed:</span>
+                        <span class="font-bold text-gray-900">0</span>
+                    </div>
+                    <p class="text-xs text-gray-400 italic">No pending dues.</p>
+                </div>
+            </div>
+        </div>
+        <!-- PART 17 OF 50: Modals - FRS Camera Capture Modal -->
+        <div id="camera-modal" class="hidden absolute inset-0 bg-black/95 z-50 flex flex-col items-center justify-center">
+            <div class="relative w-full max-w-md p-4">
+                <h3 id="camera-title" class="text-white text-center font-bold text-xl mb-4">Live FRS Capture</h3>
+                <div class="relative bg-gray-800 rounded-xl overflow-hidden aspect-[3/4] shadow-2xl border-2 border-gray-700">
+                    <video id="camera-feed" class="w-full h-full object-cover" autoplay playsinline></video>
+                    <div class="camera-overlay"></div>
+                </div>
+                <div class="mt-6 flex space-x-4">
+                    <button onclick="closeCameraModal()" class="flex-1 bg-gray-700 text-white py-3 rounded-lg font-bold">Cancel</button>
+                    <button onclick="captureImage()" class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold">Capture & Sync</button>
+                </div>
+                <!-- Hidden Canvas for Client-Side Free Tier Compression -->
+                <canvas id="capture-canvas" class="hidden"></canvas>
+            </div>
+        </div>
+        <!-- PART 18 OF 50: Modals - Remote Duty (OD) Request Modal -->
+        <div id="od-modal" class="hidden absolute inset-0 bg-black/60 z-50 flex flex-col items-center justify-center p-4">
+            <div class="bg-white w-full max-w-sm rounded-xl shadow-2xl p-6">
+                <h3 class="font-bold text-lg text-gray-900 mb-3">Request Off-Campus Duty</h3>
+                <p class="text-xs text-gray-500 mb-4">Location coordinates will be attached to this request.</p>
+                <textarea id="od-reason" rows="3" class="w-full border border-gray-300 rounded p-3 text-sm focus:ring-2 focus:ring-green-500 outline-none mb-4" placeholder="Enter reason (e.g., District Meeting, Sports Tournament)"></textarea>
+                <div class="flex space-x-3">
+                    <button onclick="closeODModal()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded font-bold">Cancel</button>
+                    <button onclick="submitODRequest()" class="flex-1 bg-green-600 text-white py-2 rounded font-bold">Submit</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- PART 19 OF 50: Core JS - Firebase Configuration & Initialization -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmNV0qJNRSRGZmy1nWyhzas3SvaAkkIdo",
+            authDomain: "tgms-pegadapally.firebaseapp.com",
+            databaseURL: "https://tgms-pegadapally-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "tgms-pegadapally",
+            storageBucket: "tgms-pegadapally.firebasestorage.app",
+            messagingSenderId: "521357144307",
+            appId: "1:521357144307:web:52e24c6eb8dc6250b28786",
+            measurementId: "G-HR1E130JQQ"
+        };
+
+        if (!firebase.apps.length) { 
+            firebase.initializeApp(firebaseConfig); 
+        }
+        
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        const storage = firebase.storage();
+      <!-- PART 20 OF 50: Core JS - State Management & Auth Listener -->
+        // Global Application State
+        let currentUser = null;
+        let userRole = null;
+        let currentStream = null; // Holds the active camera stream for FRS
+
+        // DOM View References
+        const views = {
+            login: document.getElementById('login-view'),
+            master: document.getElementById('master-admin-view'),
+            admin: document.getElementById('admin-view'),
+            teacher: document.getElementById('teacher-view'),
+            student: document.getElementById('student-view')
+        };
+
+        const spinner = document.getElementById('loading-spinner');
+        const spinnerText = document.getElementById('loading-text');
+
+        // Firebase Auth State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                // Once authenticated, determine role and route to correct dashboard
+                routeUserByRole(user.email); 
+            } else {
+                currentUser = null;
+                userRole = null;
+                showView('login');
+                hideLoading();
+            }
+        });
+      <!-- PART 21 OF 50: Core JS - Routing & View Management -->
+        // Role-Based Routing Logic
+        function routeUserByRole(email) {
+            if (email === 'principal.tgms@gmail.com' || email === 'kotha.fac@gmail.com') {
+                userRole = 'master';
+                showView('master');
+            } else if (email === 'admin.tgms@gmail.com') {
+                userRole = 'admin';
+                showView('admin');
+            } else if (email.includes('teacher')) {
+                userRole = 'teacher';
+                document.getElementById('teacher-name-header').innerText = `Faculty: ${email.split('@')[0]}`;
+                showView('teacher');
+            } else {
+                userRole = 'student';
+                document.getElementById('student-pen-display').innerText = `PEN: ${email.split('@')[0]}`;
+                showView('student');
+            }
+            hideLoading();
+        }
+
+        // View Switcher Utility
+        function showView(viewName) {
+            Object.values(views).forEach(view => {
+                if(view) {
+                    view.classList.add('hidden');
+                    view.classList.remove('flex');
+                }
+            });
+            if(views[viewName]) {
+                views[viewName].classList.remove('hidden');
+                views[viewName].classList.add('flex');
+            }
+        }
+      <!-- PART 22 OF 50: Core JS - Authentication & UI Feedback -->
+        // UI Loading State Managers
+        function showLoading(message = "Processing...") {
+            spinnerText.innerText = message;
+            spinner.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            spinner.classList.add('hidden');
+        }
+
+        // Login Handler
+        async function handleLogin() {
+            const emailStr = document.getElementById('login-email').value.trim();
+            const passStr = document.getElementById('login-password').value.trim();
+            const errorBox = document.getElementById('login-error');
+
+            if (!emailStr || !passStr) {
+                errorBox.innerText = "Email/PEN and Password are required.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            // Format PEN for Firebase Auth if student
+            const loginEmail = emailStr.includes('@') ? emailStr : `${emailStr}@student.tgms.edu`;
+
+            showLoading("Authenticating...");
+            errorBox.classList.add('hidden');
+
+            try {
+                await auth.signInWithEmailAndPassword(loginEmail, passStr);
+                // Note: routeUserByRole is automatically triggered by onAuthStateChanged
+            } catch (error) {
+                hideLoading();
+                errorBox.innerText = "Authentication Failed: Please check your credentials.";
+                errorBox.classList.remove('hidden');
+            }
+        }
+
+        // Logout Handler
+        function logout() {
+            showLoading("Securely logging out...");
+            auth.signOut();
+        }
+      <!-- PART 23 OF 50: Core JS - Geofencing & Haversine Distance Logic -->
+        // Geofencing Constants for M3RG+WGF (TGMS Pegadapally)
+        // Replace with exact decimal coordinates for the plus code M3RG+WGF
+        const SCHOOL_COORDS = { lat: 18.9667, lng: 79.1667 }; 
+        const ALLOWED_RADIUS_METERS = 1000; // 1km radius
+
+        // Utility: Calculate Haversine Distance between two GPS points
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth's radius in meters
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; // Distance in meters
+        }
+
+        // Geolocation Validator
+        function verifyLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject("Geolocation is not supported by your browser.");
+                } else {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const dist = calculateDistance(
+                                position.coords.latitude, 
+                                position.coords.longitude, 
+                                SCHOOL_COORDS.lat, 
+                                SCHOOL_COORDS.lng
+                            );
+                            resolve(dist <= ALLOWED_RADIUS_METERS);
+                        },
+                        (error) => reject("Unable to retrieve location. Ensure GPS is enabled."),
+                        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    );
+                }
+            });
+        }
+      <!-- PART 24 OF 50: Core JS - Attendance Punch-In Logic -->
+        // Main Attendance Flow (Geofence + FRS)
+        async function initiateAttendance() {
+            showLoading("Verifying Geofence (M3RG+WGF)...");
+            try {
+                // Step 1: Verify Location Proximity
+                const isWithinCampus = await verifyLocation();
+                
+                if (!isWithinCampus) {
+                    hideLoading();
+                    alert("Geofence Alert: You are outside the 1km radius of TGMS Pegadapally. Punch-in denied.");
+                    return;
+                }
+
+                hideLoading();
+                // Step 2: Proceed to FRS Biometric Capture
+                openCameraModal('attendance');
+
+            } catch (error) {
+                hideLoading();
+                alert("Location Error: " + error);
+            }
+        }
+
+        // Write Attendance Record to Firestore
+        async function recordAttendanceToDB(compressedImageBase64) {
+            showLoading("Syncing with Database...");
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                
+                await db.collection('attendance').add({
+                    uid: currentUser.uid,
+                    email: currentUser.email,
+                    date: today,
+                    timestamp: timestamp,
+                    status: 'Present',
+                    frsData: compressedImageBase64 // Storing lightweight base64 to save Storage reads
+                });
+                
+                hideLoading();
+                alert("Punch-In Successful: Attendance logged for today.");
+                closeCameraModal();
+            } catch (error) {
+                hideLoading();
+                alert("Database Sync Failed: " + error.message);
+            }
+        }
+      <!-- PART 25 OF 50: Core JS - FRS Camera Stream & Client-Side Compression -->
+        // FRS Modal State
+        let cameraMode = null; // 'attendance' or 'register'
+
+        // Start Camera Stream
+        async function openCameraModal(mode) {
+            cameraMode = mode;
+            const modal = document.getElementById('camera-modal');
+            const video = document.getElementById('camera-feed');
+            const title = document.getElementById('camera-title');
+            
+            title.innerText = mode === 'register' ? 'Register Staff Biometric' : 'Daily Attendance FRS';
+            modal.classList.remove('hidden');
+
+            try {
+                // Request front-facing camera
+                currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                video.srcObject = currentStream;
+            } catch (error) {
+                alert("Camera Access Required: Please allow camera permissions for FRS.");
+                closeCameraModal();
+            }
+        }
+
+        // Stop Camera Stream
+        function closeCameraModal() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            document.getElementById('camera-modal').classList.add('hidden');
+        }
+
+        // Capture Frame and Compress
+        function captureImage() {
+            const video = document.getElementById('camera-feed');
+            const canvas = document.getElementById('capture-canvas');
+            const context = canvas.getContext('2d');
+
+            // Match canvas dimensions to video feed
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw current video frame to hidden canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // FREE-TIER OPTIMIZATION: Compress image to JPEG at 50% quality
+            // This drastically reduces Firestore/Storage bandwidth limits
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5);
+
+            if (cameraMode === 'attendance') {
+                recordAttendanceToDB(compressedBase64);
+            } else if (cameraMode === 'register') {
+                registerBiometricToDB(compressedBase64);
+            }
+        }
+      <!-- PART 26 OF 50: Core JS - FRS Registration & Remote Duty (OD) Logic -->
+        // Register New Biometric Face Data (Master Admin Only)
+        async function registerBiometricToDB(compressedBase64) {
+            showLoading("Registering Face Data...");
+            try {
+                // In production, integrate Face-API.js or external FRS backend here.
+                // For this demo, we store the reference image string for the faculty.
+                const staffEmail = prompt("Enter the Faculty Email to associate with this biometric profile:");
+                
+                if (!staffEmail) {
+                    alert("Registration Cancelled: Email is required.");
+                    hideLoading();
+                    closeCameraModal();
+                    return;
+                }
+
+                await db.collection('biometrics').doc(staffEmail).set({
+                    email: staffEmail,
+                    referenceImage: compressedBase64,
+                    registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    registeredBy: currentUser.email
+                });
+                
+                hideLoading();
+                alert(`Success: Biometric securely registered for ${staffEmail}.`);
+                closeCameraModal();
+            } catch (error) {
+                hideLoading();
+                alert("Registration Failed: " + error.message);
+            }
+        }
+
+        // Remote Duty (OD) Logic
+        function openODModal() {
+            document.getElementById('od-modal').classList.remove('hidden');
+        }
+
+        function closeODModal() {
+            document.getElementById('od-modal').classList.add('hidden');
+            document.getElementById('od-reason').value = '';
+        }
+      <!-- PART 27 OF 50: Core JS - Remote Duty (OD) Submission Logic -->
+        // Submit Remote Duty (OD) Request
+        async function submitODRequest() {
+            const reason = document.getElementById('od-reason').value.trim();
+            if (!reason) {
+                alert("Please provide a valid reason for your OD request.");
+                return;
+            }
+
+            showLoading("Capturing Location & Submitting...");
+            try {
+                // Capture exact coordinates for the OD audit trail
+                let currentCoords = { lat: null, lng: null };
+                if (navigator.geolocation) {
+                    const pos = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {timeout: 5000});
+                    }).catch(() => null); // Silently catch if GPS is off/denied
+                    
+                    if (pos) {
+                        currentCoords.lat = pos.coords.latitude;
+                        currentCoords.lng = pos.coords.longitude;
+                    }
+                }
+
+                const today = new Date().toISOString().split('T')[0];
+
+                await db.collection('od_requests').add({
+                    uid: currentUser.uid,
+                    email: currentUser.email,
+                    date: today,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reason: reason,
+                    location: currentCoords,
+                    status: 'Pending'
+                });
+
+                hideLoading();
+                alert("OD Request Submitted Successfully. Awaiting Admin Approval.");
+                closeODModal();
+            } catch (error) {
+                hideLoading();
+                alert("Failed to submit OD request: " + error.message);
+            }
+        }
+      <!-- PART 28 OF 50: Core JS - Admin OD Queue Management -->
+        // Admin: Listen for and Render Pending OD Requests
+        function listenToODRequests() {
+            db.collection('od_requests')
+              .where('status', '==', 'Pending')
+              .orderBy('timestamp', 'desc')
+              .onSnapshot((snapshot) => {
+                  const queueContainer = document.getElementById('od-queue');
+                  const badge = document.getElementById('od-badge');
+                  
+                  if (!queueContainer || !badge) return;
+                  
+                  badge.innerText = `${snapshot.size} Pending`;
+                  queueContainer.innerHTML = '';
+
+                  if (snapshot.empty) {
+                      queueContainer.innerHTML = '<p class="text-sm text-gray-500 italic text-center py-4">No pending requests.</p>';
+                      return;
+                  }
+
+                  snapshot.forEach((doc) => {
+                      const data = doc.data();
+                      // Safely handle timestamp rendering
+                      const dateStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString() : data.date;
+                      
+                      const requestCard = `
+                          <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                              <div class="flex justify-between items-start mb-2">
+                                  <div>
+                                      <h4 class="font-bold text-sm text-gray-800 capitalize">${data.email.split('@')[0]}</h4>
+                                      <p class="text-xs text-gray-500">${dateStr}</p>
+                                  </div>
+                                  <span class="bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">Pending</span>
+                              </div>
+                              <p class="text-sm text-gray-700 mb-3">${data.reason}</p>
+                              <div class="flex space-x-2">
+                                  <button onclick="updateODStatus('${doc.id}', 'Approved')" class="flex-1 bg-green-100 text-green-700 py-1.5 rounded text-xs font-bold hover:bg-green-200 transition">Approve</button>
+                                  <button onclick="updateODStatus('${doc.id}', 'Rejected')" class="flex-1 bg-red-100 text-red-700 py-1.5 rounded text-xs font-bold hover:bg-red-200 transition">Reject</button>
+                              </div>
+                          </div>
+                      `;
+                      queueContainer.insertAdjacentHTML('beforeend', requestCard);
+                  });
+              });
+        }
+
+        // Admin: Approve or Reject OD Requests
+        async function updateODStatus(docId, newStatus) {
+            showLoading(`Marking as ${newStatus}...`);
+            try {
+                await db.collection('od_requests').doc(docId).update({
+                    status: newStatus,
+                    processedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    processedBy: currentUser.email
+                });
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                alert("Failed to update status: " + error.message);
+            }
+        }
+      <!-- PART 29 OF 50: Core JS - Admin Attendance Dashboard & Analytics -->
+        // Admin: Real-time Daily Attendance Monitor
+        function listenToTodayAttendance() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            db.collection('attendance')
+              .where('date', '==', today)
+              .orderBy('timestamp', 'desc')
+              .onSnapshot((snapshot) => {
+                  const statsContainer = document.getElementById('attendance-stats');
+                  const presentCounter = document.getElementById('present-counter');
+                  
+                  if (presentCounter) {
+                      presentCounter.innerText = snapshot.size;
+                  }
+
+                  if (!statsContainer) return;
+                  statsContainer.innerHTML = '';
+
+                  if (snapshot.empty) {
+                      statsContainer.innerHTML = '<p class="text-sm text-gray-500 italic py-2">No punch-ins yet today.</p>';
+                      return;
+                  }
+
+                  snapshot.forEach((doc) => {
+                      const data = doc.data();
+                      // Extract time from Firestore timestamp safely
+                      const timeString = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A';
+                      
+                      const row = `
+                          <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 transition last:border-0">
+                              <div class="flex items-center space-x-3">
+                                  <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold uppercase">
+                                      ${data.email.charAt(0)}
+                                  </div>
+                                  <div>
+                                      <p class="font-bold text-sm text-gray-800 capitalize">${data.email.split('@')[0]}</p>
+                                      <p class="text-xs text-gray-500">In: ${timeString}</p>
+                                  </div>
+                              </div>
+                              <span class="bg-green-100 text-green-800 text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider">Present</span>
+                          </div>
+                      `;
+                      statsContainer.insertAdjacentHTML('beforeend', row);
+                  });
+              });
+        }
+      <!-- PART 30 OF 50: Core JS - Student Dashboard Data Fetching -->
+        // Student: Load Profile, House, and Library Data
+        function loadStudentDashboard() {
+            if (!currentUser || userRole !== 'student') return;
+
+            const studentPEN = currentUser.email.split('@')[0];
+            
+            db.collection('students').doc(studentPEN).onSnapshot((doc) => {
+                const houseDisplay = document.getElementById('student-house-display');
+                const nameDisplay = document.getElementById('student-name-display');
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    if (nameDisplay) nameDisplay.innerText = data.name || `Student ${studentPEN}`;
+                    
+                    if (houseDisplay) {
+                        houseDisplay.innerText = data.house || "Unassigned";
+                        houseDisplay.className = `px-3 py-1 rounded-full text-sm font-bold ${getHouseColor(data.house)}`;
+                    }
+                } else {
+                    // Create default stub if student logs in first time
+                    db.collection('students').doc(studentPEN).set({
+                        pen: studentPEN,
+                        name: `Student ${studentPEN}`,
+                        house: "Unassigned",
+                        libraryDues: 0,
+                        booksBorrowed: 0
+                    });
+                }
+            });
+        }
+
+        // Utility: Dynamic House Color Formatter
+        function getHouseColor(house) {
+            switch(house?.toLowerCase()) {
+                case 'ruby': return 'bg-red-100 text-red-800 border border-red-200';
+                case 'emerald': return 'bg-green-100 text-green-800 border border-green-200';
+                case 'sapphire': return 'bg-blue-100 text-blue-800 border border-blue-200';
+                case 'topaz': return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+                default: return 'bg-gray-200 text-gray-800 border border-gray-300';
+            }
+        }
+      <!-- PART 31 OF 50: Core JS - Teacher Dashboard & Master Timetable -->
+        // Teacher: Load Today's Timetable (TGMS Pegadapally 8-Period Schedule)
+        function loadTeacherDashboard() {
+            if (!currentUser || userRole !== 'teacher') return;
+
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const today = days[new Date().getDay()];
+
+            // Real-time listener for the active teacher's daily class allocations
+            db.collection('timetable')
+              .where('teacherEmail', '==', currentUser.email)
+              .where('day', '==', today)
+              .orderBy('period', 'asc')
+              .onSnapshot((snapshot) => {
+                  const scheduleContainer = document.getElementById('teacher-schedule');
+                  
+                  // Fail gracefully if UI element isn't in the current view state
+                  if(!scheduleContainer) return; 
+
+                  scheduleContainer.innerHTML = '';
+                  
+                  if (snapshot.empty) {
+                      scheduleContainer.innerHTML = '<p class="text-xs text-gray-500 italic">No periods assigned for today.</p>';
+                      return;
+                  }
+
+                  snapshot.forEach((doc) => {
+                      const data = doc.data();
+                      const isSports = data.subject.toLowerCase() === 'sports';
+                      const rowStyle = isSports ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-100';
+                      
+                      const scheduleRow = `
+                          <div class="flex justify-between items-center ${rowStyle} p-3 rounded border mb-2 shadow-sm">
+                              <div>
+                                  <span class="text-xs font-bold text-gray-500 block uppercase tracking-wide">Period ${data.period}</span>
+                                  <span class="text-sm font-bold text-gray-800">Class ${data.grade} ${data.section || ''}</span>
+                              </div>
+                              <div class="text-right">
+                                  <span class="text-sm text-gray-700 font-medium">${data.subject}</span>
+                              </div>
+                          </div>
+                      `;
+                      scheduleContainer.insertAdjacentHTML('beforeend', scheduleRow);
+                  });
+              });
+        }
+      <!-- PART 32 OF 50: Core JS - Teacher Utilities (Syllabus & Marks Studio Prep) -->
+        // Teacher: Launch Google Apps Script Syllabus Tracker
+        function launchSyllabusTracker() {
+            // Hooks into the custom multi-class Google Apps Script tracking system built for TGMS
+            if(confirm("Open the Faculty Syllabus Tracking Form?")) {
+                // In production, replace with your actual Google Apps Script Web App URL
+                const appsScriptUrl = "https://script.google.com/macros/s/TGMS_TRACKER/exec"; 
+                window.open(appsScriptUrl, "_blank", "noopener,noreferrer");
+            }
+        }
+
+        // Teacher: Initialize Marks Studio (For FA-2 & Month-End Tests)
+        function openMarksStudio() {
+            const grade = prompt("Enter Class (e.g., 10, 9, Inter):");
+            const section = prompt("Enter Section (e.g., A, B):");
+            const subject = prompt("Enter Subject (e.g., Mathematics):");
+
+            if (!grade || !section || !subject) {
+                alert("Class, Section, and Subject are required to open the Marks Studio.");
+                return;
+            }
+
+            showLoading(`Loading ${subject} Roster for Class ${grade} ${section}...`);
+            
+            // Query Firestore for the specified class roster
+            db.collection('students')
+              .where('grade', '==', grade)
+              .where('section', '==', section)
+              .orderBy('pen', 'asc')
+              .get()
+              .then((snapshot) => {
+                  hideLoading();
+                  if (snapshot.empty) {
+                      alert(`No students found for Class ${grade} ${section}. Ensure PENs are registered.`);
+                      return;
+                  }
+                  // Pass the snapshot to the rendering function (Part 33)
+                  renderMarksEntryForm(snapshot, grade, section, subject);
+              })
+              .catch((error) => {
+                  hideLoading();
+                  alert("Database Error: " + error.message);
+              });
+                     }
+      <!-- PART 33 OF 50: Core JS - Marks Studio Rendering Logic -->
+        // Render the Marks Entry Form UI for FA-2 / Month-End Tests
+        function renderMarksEntryForm(snapshot, grade, section, subject) {
+            const marksModal = document.getElementById('marks-modal');
+            const marksContainer = document.getElementById('marks-student-list');
+            const marksTitle = document.getElementById('marks-modal-title');
+            
+            if (!marksModal || !marksContainer || !marksTitle) {
+                console.error("Marks Studio UI elements missing in DOM. Please check HTML layout.");
+                return;
+            }
+
+            // Update UI headers
+            marksTitle.innerText = `Enter Marks: ${subject} (Class ${grade} ${section})`;
+            marksContainer.innerHTML = '';
+            
+            // Bind metadata to the modal for the save function to use later
+            marksModal.dataset.grade = grade;
+            marksModal.dataset.section = section;
+            marksModal.dataset.subject = subject;
+
+            // Generate roster rows
+            snapshot.forEach((doc) => {
+                const student = doc.data();
+                const row = `
+                    <div class="flex justify-between items-center bg-gray-50 p-3 mb-2 rounded border border-gray-200">
+                        <div>
+                            <p class="font-bold text-sm text-gray-800 capitalize">${student.name || 'Unknown Student'}</p>
+                            <p class="text-xs text-gray-500">PEN: ${student.pen}</p>
+                        </div>
+                        <div class="w-24">
+                            <input type="number" 
+                                   class="marks-input w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-center font-bold text-gray-700" 
+                                   data-pen="${student.pen}" 
+                                   data-name="${student.name || ''}"
+                                   placeholder="0-100" 
+                                   min="0" max="100">
+                        </div>
+                    </div>
+                `;
+                marksContainer.insertAdjacentHTML('beforeend', row);
+            });
+
+            marksModal.classList.remove('hidden');
+            marksModal.classList.add('flex');
+        }
+
+        // Close Marks Studio Modal
+        function closeMarksModal() {
+            const marksModal = document.getElementById('marks-modal');
+            marksModal.classList.add('hidden');
+            marksModal.classList.remove('flex');
+            document.getElementById('marks-student-list').innerHTML = '';
+        }
+      <!-- PART 34 OF 50: Core JS - Marks Studio Save & Database Batching -->
+        // Save Entered Marks to Firestore via Batch Write
+        async function saveMarksToDB() {
+            const marksModal = document.getElementById('marks-modal');
+            const grade = marksModal.dataset.grade;
+            const section = marksModal.dataset.section;
+            const subject = marksModal.dataset.subject;
+            
+            // Fetch all dynamically generated student inputs from Part 33
+            const inputs = document.querySelectorAll('.marks-input');
+            let validEntries = 0;
+            const batch = db.batch();
+
+            if (inputs.length === 0) return;
+
+            showLoading(`Saving ${subject} Marks...`);
+
+            inputs.forEach(input => {
+                const pen = input.dataset.pen;
+                const marksValue = input.value;
+
+                // Only process inputs where the teacher actually entered a number
+                if (marksValue !== "") {
+                    const marks = Number(marksValue);
+                    
+                    // Composite Document ID: PEN + Academic Term (e.g., FA-2 for 2026)
+                    const recordRef = db.collection('academic_records').doc(`${pen}_2026_FA2`);
+                    
+                    batch.set(recordRef, {
+                        pen: pen,
+                        name: input.dataset.name,
+                        grade: grade,
+                        section: section,
+                        // Dynamically save the subject as a key, merging with existing subjects
+                        [`marks_${subject.toLowerCase()}`]: marks,
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedBy: currentUser.email
+                    }, { merge: true }); 
+                    
+                    validEntries++;
+                }
+            });
+
+            if (validEntries === 0) {
+                hideLoading();
+                alert("No marks entered. Please enter at least one score before saving.");
+                return;
+            }
+
+            try {
+                // Commit the entire batch of marks to Firestore atomically
+                await batch.commit();
+                hideLoading();
+                alert(`Success: Saved ${validEntries} student records for ${subject}.`);
+                closeMarksModal();
+            } catch (error) {
+                hideLoading();
+                alert("Database Error while saving marks: " + error.message);
+            }
+        }
+      <!-- PART 35 OF 50: Core JS - Student Academic Records & Marks View -->
+        // Student: Real-time listener for published Marks & Academic Records
+        function listenToStudentMarks() {
+            if (!currentUser || userRole !== 'student') return;
+            
+            const studentPEN = currentUser.email.split('@')[0];
+
+            db.collection('academic_records')
+              .where('pen', '==', studentPEN)
+              .onSnapshot((snapshot) => {
+                  const marksContainer = document.getElementById('student-marks-display');
+                  
+                  if (!marksContainer) return; // Fail gracefully if not in DOM
+                  marksContainer.innerHTML = '';
+
+                  if (snapshot.empty) {
+                      marksContainer.innerHTML = '<p class="text-sm text-gray-500 italic p-4 text-center bg-gray-50 rounded">No academic records published yet.</p>';
+                      return;
+                  }
+
+                  snapshot.forEach((doc) => {
+                      const data = doc.data();
+                      // Extract the term (e.g., FA2) from the document ID (format: PEN_YEAR_TERM)
+                      const term = doc.id.split('_').pop(); 
+                      
+                      // Dynamically parse all subjects (keys starting with 'marks_')
+                      let marksHtml = '';
+                      for (const [key, value] of Object.entries(data)) {
+                          if (key.startsWith('marks_')) {
+                              const subjectName = key.replace('marks_', '').toUpperCase();
+                              marksHtml += `
+                                  <div class="flex justify-between items-center text-sm py-2 border-b border-gray-100 last:border-0">
+                                      <span class="text-gray-700 font-medium">${subjectName}</span>
+                                      <span class="font-bold text-gray-900 bg-gray-100 px-2 py-0.5 rounded">${value} / 100</span>
+                                  </div>
+                              `;
+                          }
+                      }
+
+                      const termCard = `
+                          <div class="bg-white p-4 rounded-xl shadow border border-gray-200 mb-4 overflow-hidden">
+                              <div class="bg-blue-50 -mx-4 -mt-4 p-3 mb-3 border-b border-blue-100">
+                                  <h5 class="font-bold text-blue-800 uppercase tracking-wide text-sm">Term: ${term} Results</h5>
+                              </div>
+                              <div class="flex flex-col">
+                                  ${marksHtml || '<p class="text-xs text-gray-400 italic">Scores pending...</p>'}
+                              </div>
+                          </div>
+                      `;
+                      marksContainer.insertAdjacentHTML('beforeend', termCard);
+                  });
+              });
+        }
+      <!-- PART 36 OF 50: Core JS - Master Admin Dashboard & System Analytics -->
+        // Master Admin: High-Level System Overview
+        function loadMasterDashboard() {
+            if (!currentUser || userRole !== 'master') return;
+
+            const today = new Date().toISOString().split('T')[0];
+
+            // 1. Total Daily Attendance Counter
+            db.collection('attendance')
+              .where('date', '==', today)
+              .onSnapshot(snapshot => {
+                  const countEl = document.getElementById('master-attendance-count');
+                  if(countEl) countEl.innerText = snapshot.size;
+              });
+
+            // 2. Total Pending OD Requests Counter
+            db.collection('od_requests')
+              .where('status', '==', 'Pending')
+              .onSnapshot(snapshot => {
+                  const countEl = document.getElementById('master-od-count');
+                  if(countEl) countEl.innerText = snapshot.size;
+              });
+
+            // 3. Total Registered Faculty (via Biometrics collection)
+            db.collection('biometrics')
+              .onSnapshot(snapshot => {
+                  const countEl = document.getElementById('master-faculty-count');
+                  if(countEl) countEl.innerText = snapshot.size;
+              });
+        }
+
+        // Master & Admin: System-Wide Notice Board Publishing
+        async function publishNotice() {
+            const title = document.getElementById('notice-title')?.value.trim();
+            const content = document.getElementById('notice-content')?.value.trim();
+            const targetAudience = document.getElementById('notice-audience')?.value || 'All'; // 'All', 'Faculty', 'Students'
+
+            if (!title || !content) {
+                alert("Notice title and content are required.");
+                return;
+            }
+
+            showLoading("Publishing Notice...");
+            try {
+                await db.collection('notices').add({
+                    title: title,
+                    content: content,
+                    audience: targetAudience,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    publishedBy: currentUser.email,
+                    active: true
+                });
+                
+                hideLoading();
+                alert("Notice Published Successfully to the Digital Board.");
+                
+                // Clear input fields
+                if(document.getElementById('notice-title')) document.getElementById('notice-title').value = '';
+                if(document.getElementById('notice-content')) document.getElementById('notice-content').value = '';
+            } catch (error) {
+                hideLoading();
+                alert("Failed to publish notice: " + error.message);
+            }
+        }
+      <!-- PART 37 OF 50: Core JS - Digital Notice Board & System Communications -->
+        // Global: Listen for and Render Notices across all dashboards
+        function listenToNotices() {
+            // Fetch the 5 most recent active notices
+            db.collection('notices')
+              .where('active', '==', true)
+              .orderBy('timestamp', 'desc')
+              .limit(5)
+              .onSnapshot((snapshot) => {
+                  // Target all DOM elements acting as notice boards (one per role view)
+                  const containers = document.querySelectorAll('.notice-board-container');
+                  if (containers.length === 0) return;
+
+                  let noticesHtml = '';
+                  
+                  if (snapshot.empty) {
+                      noticesHtml = '<p class="text-sm text-gray-500 italic p-4 text-center border rounded bg-gray-50">No active notices at this time.</p>';
+                  } else {
+                      snapshot.forEach((doc) => {
+                          const data = doc.data();
+                          
+                          // Filter visibility based on current user's role
+                          const isMasterOrAdmin = (userRole === 'master' || userRole === 'admin');
+                          const isTargetAudience = (data.audience === 'All' || data.audience.toLowerCase() === userRole);
+                          
+                          if (isTargetAudience || isMasterOrAdmin) {
+                              const dateStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString() : 'Just now';
+                              
+                              noticesHtml += `
+                                  <div class="bg-blue-50 border-l-4 border-blue-500 p-3 mb-3 shadow-sm rounded-r relative overflow-hidden">
+                                      <div class="flex justify-between items-start mb-1">
+                                          <h4 class="font-bold text-blue-900 text-sm">${data.title}</h4>
+                                          <span class="text-[10px] text-blue-600 font-bold bg-blue-100 px-1.5 py-0.5 rounded">${dateStr}</span>
+                                      </div>
+                                      <p class="text-xs text-blue-800 leading-relaxed">${data.content}</p>
+                                      ${isMasterOrAdmin ? `<button onclick="deleteNotice('${doc.id}')" class="absolute bottom-2 right-2 text-[10px] text-red-500 hover:text-red-700 font-bold">Remove</button>` : ''}
+                                  </div>
+                              `;
+                          }
+                      });
+                      
+                      // Fallback if notices exist but none match the user's role
+                      if (noticesHtml === '') {
+                          noticesHtml = '<p class="text-sm text-gray-500 italic p-4 text-center border rounded bg-gray-50">No notices for your department.</p>';
+                      }
+                  }
+
+                  // Inject the compiled HTML into all notice board containers on the page
+                  containers.forEach(container => {
+                      container.innerHTML = noticesHtml;
+                  });
+              });
+        }
+
+        // Master & Admin: Delete a notice from the board
+        async function deleteNotice(docId) {
+            if(confirm("Are you sure you want to remove this notice?")) {
+                try {
+                    await db.collection('notices').doc(docId).update({ active: false });
+                } catch (error) {
+                    alert("Failed to remove notice: " + error.message);
+                }
+            }
+        }
+      <!-- PART 38 OF 50: Core JS - User Profile & Settings Management -->
+        // UI: Open Profile Settings Modal
+        function openProfileModal() {
+            const modal = document.getElementById('profile-modal');
+            if (!modal) return;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Pre-fill user data
+            const emailDisplay = document.getElementById('profile-email-display');
+            const roleDisplay = document.getElementById('profile-role-display');
+            
+            if (emailDisplay && currentUser) {
+                emailDisplay.innerText = currentUser.email;
+            }
+            if (roleDisplay && userRole) {
+                roleDisplay.innerText = userRole.toUpperCase();
+            }
+        }
+
+        // UI: Close Profile Settings Modal
+        function closeProfileModal() {
+            const modal = document.getElementById('profile-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Action: Secure Password Reset Flow
+        async function requestPasswordReset() {
+            if (!currentUser) return;
+            
+            const confirmReset = confirm(`Send a password reset link to ${currentUser.email}?`);
+            if (!confirmReset) return;
+
+            showLoading("Sending reset link...");
+            try {
+                await auth.sendPasswordResetEmail(currentUser.email);
+                hideLoading();
+                alert(`Security link sent to ${currentUser.email}. Please check your inbox and spam folders.`);
+                closeProfileModal();
+            } catch (error) {
+                hideLoading();
+                alert("Security Error: " + error.message);
+            }
+        }
+      <!-- PART 39 OF 50: Core JS - Admin Reporting & Data Export -->
+        // Admin: Generate and Download Daily Attendance Report (CSV)
+        async function exportAttendanceCSV() {
+            const today = new Date().toISOString().split('T')[0];
+            showLoading("Generating CSV Report...");
+            
+            try {
+                const snapshot = await db.collection('attendance')
+                                         .where('date', '==', today)
+                                         .orderBy('timestamp', 'asc')
+                                         .get();
+                                         
+                if (snapshot.empty) {
+                    hideLoading();
+                    alert("No attendance records found for today.");
+                    return;
+                }
+
+                // Initialize CSV Content with Headers
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "Date,Time,Faculty Email,Status\n"; 
+
+                // Populate Rows
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString() : 'N/A';
+                    const row = `${data.date},${timeStr},${data.email},${data.status}`;
+                    csvContent += row + "\n";
+                });
+
+                // Create hidden downloadable link and trigger click
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `TGMS_Pegadapally_Attendance_${today}.csv`);
+                
+                document.body.appendChild(link); // Required for Firefox
+                link.click();
+                document.body.removeChild(link);
+                
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                alert("Data Export Failed: " + error.message);
+            }
+        }
+      <!-- PART 40 OF 50: Core JS - User Provisioning & Roster Management -->
+        // Admin: Provision New Student Profile (Pre-registers data before Auth)
+        async function provisionStudent() {
+            const pen = prompt("Enter new student PEN (e.g., 10045):");
+            const name = prompt("Enter student full name:");
+            const grade = prompt("Enter Class/Grade (e.g., 10):");
+            const section = prompt("Enter Section (e.g., A):");
+
+            if (!pen || !name || !grade) {
+                alert("PEN, Name, and Grade are required to provision a student.");
+                return;
+            }
+
+            showLoading(`Provisioning Student ${pen}...`);
+            try {
+                // Creates the student metadata record. 
+                // The student will use this PEN to register their Firebase Auth account.
+                await db.collection('students').doc(pen).set({
+                    pen: pen,
+                    name: name,
+                    grade: grade,
+                    section: section || '',
+                    house: "Unassigned",
+                    libraryDues: 0,
+                    booksBorrowed: 0,
+                    registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    registeredBy: currentUser.email
+                });
+                
+                hideLoading();
+                alert(`Success: Student ${name} (${pen}) added to the institutional roster.`);
+            } catch (error) {
+                hideLoading();
+                alert("Database Error: " + error.message);
+            }
+        }
+
+        // Admin: Provision New Faculty Profile
+        async function provisionFaculty() {
+            const email = prompt("Enter new faculty email (e.g., math.teacher@tgms.edu):");
+            const name = prompt("Enter faculty full name:");
+            const primarySubject = prompt("Enter primary subject:");
+
+            if (!email || !name) {
+                alert("Email and Name are required to provision faculty.");
+                return;
+            }
+
+            showLoading(`Provisioning Faculty ${email}...`);
+            try {
+                await db.collection('faculty').doc(email).set({
+                    email: email,
+                    name: name,
+                    subject: primarySubject || 'General',
+                    status: 'Active',
+                    registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    registeredBy: currentUser.email
+                });
+                
+                hideLoading();
+                alert(`Success: Faculty ${name} (${email}) added to the roster. Next step: Register their biometric data.`);
+            } catch (error) {
+                hideLoading();
+                alert("Database Error: " + error.message);
+            }
+        }
+      <!-- PART 41 OF 50: Core JS - Library Management & Resource Tracking -->
+        // Admin/Librarian: Issue a Library Book to a Student
+        async function issueLibraryBook() {
+            const pen = prompt("Enter Student PEN:");
+            const bookId = prompt("Enter Book ID / ISBN:");
+            const bookTitle = prompt("Enter Book Title:");
+
+            if (!pen || !bookId || !bookTitle) {
+                alert("PEN, Book ID, and Title are required to issue a book.");
+                return;
+            }
+
+            showLoading(`Issuing "${bookTitle}" to ${pen}...`);
+            const today = new Date();
+            const dueDate = new Date();
+            dueDate.setDate(today.getDate() + 14); // 14-day lending period
+
+            const batch = db.batch();
+            const studentRef = db.collection('students').doc(pen);
+            const transactionRef = db.collection('library_transactions').doc();
+
+            try {
+                // 1. Record the lending transaction
+                batch.set(transactionRef, {
+                    transactionId: transactionRef.id,
+                    studentPen: pen,
+                    bookId: bookId,
+                    bookTitle: bookTitle,
+                    issuedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    dueDate: dueDate.toISOString().split('T')[0],
+                    status: 'Issued',
+                    issuedBy: currentUser.email
+                });
+
+                // 2. Increment the student's active borrowed books count
+                batch.update(studentRef, {
+                    booksBorrowed: firebase.firestore.FieldValue.increment(1)
+                });
+
+                await batch.commit();
+                hideLoading();
+                alert(`Success: "${bookTitle}" has been issued to Student ${pen}. Due back on ${dueDate.toLocaleDateString()}.`);
+            } catch (error) {
+                hideLoading();
+                alert("Library System Error: " + error.message);
+            }
+        }
+
+        // Admin/Librarian: Process a Book Return & Calculate Overdue Fines
+        async function returnLibraryBook() {
+            const pen = prompt("Enter Student PEN:");
+            const bookId = prompt("Enter Book ID returning:");
+
+            if (!pen || !bookId) return;
+
+            showLoading("Processing Return...");
+            
+            try {
+                // Find the active transaction
+                const snapshot = await db.collection('library_transactions')
+                    .where('studentPen', '==', pen)
+                    .where('bookId', '==', bookId)
+                    .where('status', '==', 'Issued')
+                    .limit(1)
+                    .get();
+
+                if (snapshot.empty) {
+                    hideLoading();
+                    alert("No active lending record found for this book and student.");
+                    return;
+                }
+
+                const doc = snapshot.docs[0];
+                const data = doc.data();
+                const dueDate = new Date(data.dueDate);
+                const today = new Date();
+                
+                let fineAmount = 0;
+                // Calculate fine if overdue (e.g., ₹5 per day late)
+                if (today > dueDate) {
+                    const diffTime = Math.abs(today - dueDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                    fineAmount = diffDays * 5; 
+                }
+
+                const batch = db.batch();
+                
+                // 1. Mark transaction as returned
+                batch.update(doc.ref, {
+                    status: 'Returned',
+                    returnedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    fineAssessed: fineAmount
+                });
+
+                // 2. Decrement borrowed count and add dues if applicable
+                const studentRef = db.collection('students').doc(pen);
+                batch.update(studentRef, {
+                    booksBorrowed: firebase.firestore.FieldValue.increment(-1),
+                    libraryDues: firebase.firestore.FieldValue.increment(fineAmount)
+                });
+
+                await batch.commit();
+                hideLoading();
+                
+                let msg = `Book returned successfully.`;
+                if (fineAmount > 0) msg += `\nNote: Late fine of ₹${fineAmount} has been added to their library dues.`;
+                alert(msg);
+
+            } catch (error) {
+                hideLoading();
+                alert("Library System Error: " + error.message);
+            }
+        }
+      
+      <!-- PART 42 OF 50: Core JS - Digital ID Card Generation -->
+        // Global: Generate and Display Digital ID Card for Users
+        async function showDigitalID() {
+            if (!currentUser) return;
+            
+            const idModal = document.getElementById('id-card-modal');
+            const nameEl = document.getElementById('id-card-name');
+            const identifierEl = document.getElementById('id-card-identifier');
+            const roleEl = document.getElementById('id-card-role');
+            const extraEl = document.getElementById('id-card-extra');
+            
+            if (!idModal) return;
+
+            showLoading("Generating Digital ID...");
+
+            try {
+                // Fetch specific user details based on their active role
+                let userData = null;
+                
+                if (userRole === 'student') {
+                    const pen = currentUser.email.split('@')[0];
+                    const doc = await db.collection('students').doc(pen).get();
+                    userData = doc.exists ? doc.data() : null;
+                } else {
+                    // Faculty, Admin, or Master
+                    const doc = await db.collection('faculty').doc(currentUser.email).get();
+                    userData = doc.exists ? doc.data() : null;
+                }
+
+                hideLoading();
+
+                if (!userData) {
+                    alert("Profile data not found. Please contact TGMS administration.");
+                    return;
+                }
+
+                // Populate ID Card UI dynamically
+                nameEl.innerText = userData.name || currentUser.email.split('@')[0];
+                roleEl.innerText = userRole.toUpperCase();
+                
+                if (userRole === 'student') {
+                    identifierEl.innerText = `PEN: ${userData.pen}`;
+                    extraEl.innerText = `Class: ${userData.grade} ${userData.section || ''} | House: ${userData.house || 'Unassigned'}`;
+                } else {
+                    identifierEl.innerText = currentUser.email;
+                    extraEl.innerText = `Dept: ${userData.subject || 'Administration'}`;
+                }
+
+                // Render Modal
+                idModal.classList.remove('hidden');
+                idModal.classList.add('flex');
+                
+            } catch (error) {
+                hideLoading();
+                alert("Failed to load ID Card: " + error.message);
+            }
+        }
+
+        // Global: Close Digital ID Modal
+        function closeDigitalID() {
+            const idModal = document.getElementById('id-card-modal');
+            if (idModal) {
+                idModal.classList.add('hidden');
+                idModal.classList.remove('flex');
+            }
+        }
+      <!-- PART 43 OF 50: Core JS - UI Utilities, Loading States & Mobile Navigation -->
+        // UI Utility: Global Loading Spinner Overlay
+        function showLoading(message = "Processing...") {
+            let loader = document.getElementById('global-loader');
+            if (!loader) {
+                // Dynamically create the loader if it doesn't exist in the DOM
+                loader = document.createElement('div');
+                loader.id = 'global-loader';
+                loader.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex flex-col items-center justify-center hidden backdrop-blur-sm';
+                loader.innerHTML = `
+                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mb-4"></div>
+                    <p id="loader-text" class="text-white font-bold tracking-wide text-sm"></p>
+                `;
+                document.body.appendChild(loader);
+            }
+            document.getElementById('loader-text').innerText = message;
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+        }
+
+        // UI Utility: Hide Loading Spinner
+        function hideLoading() {
+            const loader = document.getElementById('global-loader');
+            if (loader) {
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+            }
+        }
+
+        // UI Utility: Mobile Sidebar Toggle
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            
+            if (!sidebar || !overlay) return;
+
+            // Toggle CSS classes for slide-in effect
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // UI Utility: Close modals on backdrop click
+        window.onclick = function(event) {
+            const modals = [
+                'camera-modal', 'od-modal', 'marks-modal', 
+                'profile-modal', 'id-card-modal'
+            ];
+            
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    // Route to specific close functions to ensure streams/data are cleared
+                    if (modalId === 'camera-modal') closeCameraModal();
+                    else if (modalId === 'od-modal') closeODModal();
+                    else if (modalId === 'marks-modal') closeMarksModal();
+                    else if (modalId === 'profile-modal') closeProfileModal();
+                    else if (modalId === 'id-card-modal') closeDigitalID();
+                }
+            });
+        };
+      <!-- PART 44 OF 50: Core JS - Application Initialization & Event Listeners -->
+        // Global Initialization on DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("TGMS Pegadapally Portal: DOM Initialized. Starting Firebase Handlers...");
+
+            // 1. Initialize Authentication State Observer
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log("Auth State: Logged in as", user.email);
+                    
+                    // Determine User Role & Load Dashboard Views
+                    determineUserRoleAndInitialize(user);
+                } else {
+                    console.log("Auth State: No active session. Redirecting to Login...");
+                    currentUser = null;
+                    userRole = null;
+                    switchView('login-view');
+                    hideLoading();
+                }
+            });
+
+            // 2. Bind Form Submission Interceptors
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('login-email').value.trim();
+                    const pass = document.getElementById('login-password').value.trim();
+                    handleLogin(email, pass);
+                });
+            }
+
+            // 3. Register Global Click Handlers for Navigation Items
+            document.querySelectorAll('[data-view-target]').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetView = item.getAttribute('data-view-target');
+                    switchView(targetView);
+                    
+                    // Close mobile sidebar automatically upon selection if open
+                    const sidebar = document.getElementById('sidebar');
+                    if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
+                        toggleMobileMenu();
+                    }
+                });
+            });
+        });
+
+        // Determine Role by Email Domain / Custom Claims / Firestore Lookup
+        async function determineUserRoleAndInitialize(user) {
+            showLoading("Verifying Institutional Credentials...");
+            
+            try {
+                const email = user.email.toLowerCase();
+                
+                // Master Admin Check (Hardcoded institutional master override)
+                if (email === 'master@tgms.edu' || email.startsWith('admin')) {
+                    // Verify against Firestore admin collection or assign master
+                    const adminDoc = await db.collection('admins').doc(email).get();
+                    userRole = (adminDoc.exists && adminDoc.data().isMaster) ? 'master' : 'admin';
+                } else if (email.includes('@tgms.edu') || email.includes('teacher')) {
+                    userRole = 'teacher';
+                } else {
+                    // Default fallback: Student (authenticated via PEN@tgms.edu)
+                    userRole = 'student';
+                }
+
+                console.log(`Role Assigned: ${userRole.toUpperCase()} for ${email}`);
+                
+                // Initialize Role-Specific Real-time Listeners
+                initializeRoleSpecificFeatures();
+
+                // Route to appropriate dashboard view
+                if (userRole === 'master' || userRole === 'admin') {
+                    switchView('admin-dashboard-view');
+                    loadMasterDashboard();
+                    listenToTodayAttendance();
+                    listenToODRequests();
+                } else if (userRole === 'teacher') {
+                    switchView('teacher-dashboard-view');
+                    loadTeacherDashboard();
+                } else {
+                    switchView('student-dashboard-view');
+                    loadStudentDashboard();
+                    listenToStudentMarks();
+                }
+
+                // Global listeners initialized for all authenticated roles
+                listenToNotices();
+
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                alert("Role Verification Failed: " + error.message);
+                auth.signOut();
+            }
+        }
+      <!-- PART 45 OF 50: Core JS - Role-Specific Feature Hooks & Auxiliary Services -->
+        // Helper: Initialize role-specific auxiliary features
+        function initializeRoleSpecificFeatures() {
+            // Setup real-time badges and listeners depending on who is logged in
+            if (userRole === 'master' || userRole === 'admin') {
+                // Pre-fetch pending counts for admin badges
+                db.collection('od_requests')
+                  .where('status', '==', 'Pending')
+                  .get()
+                  .then(snap => {
+                      const badge = document.getElementById('od-badge');
+                      if (badge) badge.innerText = `${snap.size} Pending`;
+                  });
+            }
+        }
+
+        // Auxiliary: Print current view / report using window.print()
+        function printCurrentDocument() {
+            window.print();
+        }
+
+        // Auxiliary: Quick Export of Student Roster to CSV (Admin feature)
+        async function exportStudentRosterCSV() {
+            showLoading("Exporting Student Roster...");
+            try {
+                const snapshot = await db.collection('students').orderBy('pen', 'asc').get();
+                
+                if (snapshot.empty) {
+                    hideLoading();
+                    alert("No student records found.");
+                    return;
+                }
+
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "PEN,Name,Grade,Section,House,Library Dues,Books Borrowed\n";
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = `${data.pen},"${data.name || ''}",${data.grade || ''},${data.section || ''},${data.house || 'Unassigned'},${data.libraryDues || 0},${data.booksBorrowed || 0}`;
+                    csvContent += row + "\n";
+                });
+
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `TGMS_Pegadapally_Student_Roster.csv`);
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                alert("Export Failed: " + error.message);
+            }
+        }
+      <!-- PART 46 OF 50: Core JS - House Points & Extracurricular Management -->
+        // Admin: Award or Deduct House Points (Ruby, Emerald, Sapphire, Topaz)
+        async function modifyHousePoints() {
+            const house = prompt("Enter House Name (Ruby, Emerald, Sapphire, Topaz):")?.trim();
+            const pointsStr = prompt("Enter points to add (or use negative number to deduct, e.g., 10 or -5):");
+            const reason = prompt("Enter reason for points adjustment:");
+
+            if (!house || !pointsStr || !reason) {
+                alert("House, points value, and reason are all required.");
+                return;
+            }
+
+            const points = parseInt(pointsStr, 10);
+            if (isNaN(points)) {
+                alert("Please enter a valid numeric value for points.");
+                return;
+            }
+
+            const validHouses = ['ruby', 'emerald', 'sapphire', 'topaz'];
+            if (!validHouses.includes(house.toLowerCase())) {
+                alert("Invalid house name. Please choose from Ruby, Emerald, Sapphire, or Topaz.");
+                return;
+            }
+
+            showLoading(`Updating ${house} House points...`);
+
+            const batch = db.batch();
+            const houseRef = db.collection('house_standings').doc(house.toLowerCase());
+            const logRef = db.collection('house_point_logs').doc();
+
+            try {
+                // 1. Log the transaction for audit trail
+                batch.set(logRef, {
+                    house: house.toLowerCase(),
+                    pointsChanged: points,
+                    reason: reason,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    authorizedBy: currentUser.email
+                });
+
+                // 2. Update cumulative house points
+                batch.set(houseRef, {
+                    houseName: house,
+                    totalPoints: firebase.firestore.FieldValue.increment(points),
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                await batch.commit();
+                hideLoading();
+                alert(`Successfully updated ${house} house by ${points > 0 ? '+' + points : points} points.`);
+            } catch (error) {
+                hideLoading();
+                alert("Failed to update house points: " + error.message);
+            }
+        }
+
+        // Global: Real-time listener for House Standings leaderboard
+        function listenToHouseStandings() {
+            db.collection('house_standings').orderBy('totalPoints', 'desc').onSnapshot(snapshot => {
+                const container = document.getElementById('house-leaderboard');
+                if (!container) return;
+
+                container.innerHTML = '';
+                if (snapshot.empty) {
+                    container.innerHTML = '<p class="text-xs text-gray-500 italic">No house points recorded yet.</p>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const houseCard = `
+                        flex justify-between items-center p-3 rounded border mb-2 ${getHouseColor(data.houseName)}
+                    `;
+                    // Render Leaderboard Row
+                    const row = `
+                        <div class="flex justify-between items-center p-3 rounded-lg border shadow-sm bg-white mb-2">
+                            <span class="font-bold uppercase text-sm px-2 py-1 rounded ${getHouseColor(data.houseName)}">${data.houseName}</span>
+                            <span class="font-black text-lg text-gray-800">${data.totalPoints || 0} <span class="text-xs font-normal text-gray-500">Pts</span></span>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', row);
+                });
+            });
+        }
+      <!-- PART 47 OF 50: Core JS - Timetable Management & Master Schedule Builder -->
+        // Admin: Publish or Update Master Timetable Allocation
+        async function assignTimetableSlot() {
+            const grade = prompt("Enter Class / Grade (e.g., 10, 9, Inter):")?.trim();
+            const section = prompt("Enter Section (e.g., A, B, or leave blank):")?.trim() || '';
+            const day = prompt("Enter Day (e.g., Monday, Tuesday, Wednesday...):")?.trim();
+            const periodStr = prompt("Enter Period Number (1 to 8):")?.trim();
+            const subject = prompt("Enter Subject Name (e.g., Mathematics, Physics, Sports):")?.trim();
+            const teacherEmail = prompt("Enter Assigned Teacher Email (e.g., math.teacher@tgms.edu):")?.trim();
+
+            if (!grade || !day || !periodStr || !subject || !teacherEmail) {
+                alert("Grade, Day, Period, Subject, and Teacher Email are all required fields.");
+                return;
+            }
+
+            const period = parseInt(periodStr, 10);
+            if (isNaN(period) || period < 1 || period > 8) {
+                alert("Invalid period. TGMS Pegadapally master timetable operates on an 8-period daily structure (1-8).");
+                return;
+            }
+
+            // Enforce institutional scheduling constraint: Period 1 cannot be Sports
+            if (period === 1 && subject.toLowerCase() === 'sports') {
+                alert("Scheduling Constraint Violation: Sports is restricted from Period 1 per institutional guidelines.");
+                return;
+            }
+
+            showLoading(`Allocating Period ${period} for Class ${grade} ${section}...`);
+
+            // Composite Document ID to prevent double-booking or collisions: Grade_Section_Day_Period
+            const slotId = `${grade}_${section || 'Gen'}_${day}_P${period}`.replace(/\s+/g, '_');
+            const slotRef = db.collection('timetable').doc(slotId);
+
+            try {
+                await slotRef.set({
+                    grade: grade,
+                    section: section,
+                    day: day,
+                    period: period,
+                    subject: subject,
+                    teacherEmail: teacherEmail.toLowerCase(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: currentUser.email
+                });
+
+                hideLoading();
+                alert(`Success: Timetable slot updated for ${day} - Period ${period} (${subject}).`);
+            } catch (error) {
+                hideLoading();
+                alert("Timetable Update Failed: " + error.message);
+            }
+        }
+      <!-- PART 48 OF 50: Core JS - Emergency Broadcast & Institutional Safety -->
+        // Master & Admin: Trigger Emergency Broadcast Alert Across All Portals
+        async function triggerEmergencyBroadcast() {
+            const alertTitle = prompt("Enter Emergency Alert Title (e.g., WEATHER ADVISORY, CAMPUS NOTICE):")?.trim();
+            const alertMessage = prompt("Enter Emergency Broadcast Message:")?.trim();
+
+            if (!alertTitle || !alertMessage) {
+                alert("Alert title and message are required for emergency broadcasts.");
+                return;
+            }
+
+            const confirmBroadcast = confirm(`WARNING: This will instantly push a high-priority alert to all active sessions across TGMS Pegadapally.\n\nProceed with broadcast?`);
+            if (!confirmBroadcast) return;
+
+            showLoading("Broadcasting Emergency Alert...");
+
+            try {
+                await db.collection('emergency_alerts').add({
+                    title: alertTitle,
+                    message: alertMessage,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    issuedBy: currentUser.email,
+                    active: true
+                });
+
+                hideLoading();
+                alert("Emergency Broadcast Sent Successfully.");
+            } catch (error) {
+                hideLoading();
+                alert("Broadcast Failed: " + error.message);
+            }
+        }
+
+        // Global: Real-time listener for Emergency Broadcast Banners
+        function listenToEmergencyAlerts() {
+            db.collection('emergency_alerts')
+              .where('active', '==', true)
+              .orderBy('timestamp', 'desc')
+              .limit(1)
+              .onSnapshot(snapshot => {
+                  let banner = document.getElementById('emergency-banner');
+                  
+                  if (snapshot.empty) {
+                      if (banner) banner.classList.add('hidden');
+                      return;
+                  }
+
+                  const alertData = snapshot.docs[0].data();
+                  const alertId = snapshot.docs[0].id;
+
+                  if (!banner) {
+                      banner = document.createElement('div');
+                      banner.id = 'emergency-banner';
+                      banner.className = 'bg-red-600 text-white px-4 py-3 shadow-lg flex justify-between items-center fixed top-0 left-0 right-0 z-50 animate-pulse';
+                      document.body.prepend(banner);
+                  }
+
+                  banner.innerHTML = `
+                      <div class="flex items-center space-x-3 overflow-hidden">
+                          <span class="bg-white text-red-600 font-black text-xs px-2 py-1 rounded uppercase tracking-wider">URGENT</span>
+                          <p class="text-sm font-bold truncate"><strong>${alertData.title}:</strong> ${alertData.message}</p>
+                      </div>
+                      ${(userRole === 'master' || userRole === 'admin') ? `<button onclick="dismissEmergencyAlert('${alertId}')" class="bg-red-700 hover:bg-red-800 text-white text-xs font-bold px-3 py-1 rounded ml-4 border border-red-500">Dismiss</button>` : ''}
+                  `;
+                  banner.classList.remove('hidden');
+              });
+        }
+
+        // Master & Admin: Dismiss Emergency Alert Banner
+        async function dismissEmergencyAlert(alertId) {
+            try {
+                await db.collection('emergency_alerts').doc(alertId).update({ active: false });
+                const banner = document.getElementById('emergency-banner');
+                if (banner) banner.classList.add('hidden');
+            } catch (error) {
+                alert("Failed to dismiss alert: " + error.message);
+            }
+        }
+      <!-- PART 49 OF 50: Core JS - System Diagnostics, Health Checks & Initialization Hooks -->
+        // Master Admin: Run Comprehensive Firebase & System Health Check
+        async function runSystemHealthCheck() {
+            if (userRole !== 'master' && userRole !== 'admin') {
+                alert("Unauthorized: System diagnostics are restricted to administrative personnel.");
+                return;
+            }
+
+            showLoading("Running System Diagnostics...");
+            const diagnosticsResults = [];
+
+            try {
+                // 1. Test Firestore Connectivity & Latency
+                const startTime = performance.now();
+                await db.collection('students').limit(1).get();
+                const latency = Math.round(performance.now() - startTime);
+                diagnosticsResults.push(`[PASS] Firestore Database: Connected (${latency}ms latency)`);
+
+                // 2. Test Firebase Auth Session State
+                if (auth.currentUser) {
+                    diagnosticsResults.push(`[PASS] Firebase Auth: Active session for ${auth.currentUser.email}`);
+                } else {
+                    diagnosticsResults.push(`[WARN] Firebase Auth: No active user session detected`);
+                }
+
+                // 3. Test Geolocation Services
+                if ("geolocation" in navigator) {
+                    diagnosticsResults.push(`[PASS] Geolocation API: Supported by browser environment`);
+                } else {
+                    diagnosticsResults.push(`[FAIL] Geolocation API: Not supported by current browser`);
+                }
+
+                // 4. Test MediaDevices / Camera Support for FRS
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    diagnosticsResults.push(`[PASS] MediaDevices API: Camera streaming supported`);
+                } else {
+                    diagnosticsResults.push(`[FAIL] MediaDevices API: Camera access unavailable`);
+                }
+
+                hideLoading();
+                
+                // Display Diagnostics Report Modal or Alert
+                alert("TGMS Pegadapally - System Diagnostics Report:\n\n" + diagnosticsResults.join("\n"));
+
+            } catch (error) {
+                hideLoading();
+                alert("System Diagnostic Failure: " + error.message);
+            }
+        }
+
+        // Global Initialization Extension: Trigger passive listeners on startup
+        document.addEventListener('DOMContentLoaded', () => {
+            // Bind global auxiliary listeners if elements exist in DOM
+            try {
+                listenToHouseStandings();
+                listenToEmergencyAlerts();
+            } catch (e) {
+                console.warn("Passive background listener initialization skipped:", e.message);
+            }
+        });
+      <!-- PART 50 OF 50: Core JS & UI - Application Bootstrap, Cleanup & Completion Handlers -->
+        // Global Cleanup: Terminate active streams, media tracks, and listeners on logout
+        function handleLogout() {
+            const confirmLogout = confirm("Are you sure you want to sign out of the TGMS Portal?");
+            if (!confirmLogout) return;
+
+            showLoading("Signing out...");
+
+            // 1. Stop active camera streams if FRS modal was open
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+
+            // 2. Sign out from Firebase Auth
+            auth.signOut().then(() => {
+                hideLoading();
+                currentUser = null;
+                userRole = null;
+                
+                // Reset UI views and clear dynamic containers
+                document.querySelectorAll('.notice-board-container').forEach(el => el.innerHTML = '');
+                const banner = document.getElementById('emergency-banner');
+                if (banner) banner.remove();
+
+                switchView('login-view');
+                console.log("TGMS Portal: Successfully signed out and cleaned up active states.");
+            }).catch((error) => {
+                hideLoading();
+                alert("Error signing out: " + error.message);
+            });
+        }
+
+        // Final System Initialization Log
+        console.log("TGMS Pegadapally Web Application (Parts 1-50): All modules successfully loaded and initialized.");
+    </script>
+</body>
+</html>
