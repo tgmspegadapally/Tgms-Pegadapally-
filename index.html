@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PM SHRI TGMS Model School, Pegadapally - Official Website Coming Soon">
+  <title>PM SHRI TGMS MODEL SCHOOL, PEGADAPALLY</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy: #06152e;
+      --blue: #123d68;
+      --teal: #0b6075;
+      --white: #ffffff;
+      --soft: #dceeff;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255,255,255,.10), transparent 25%),
+        radial-gradient(circle at 85% 85%, rgba(255,255,255,.08), transparent 25%),
+        linear-gradient(135deg, var(--navy), var(--blue), var(--teal));
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: 92%;
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 55px 0 35px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 15px 10px 40px;
+    }
+
+    .badge {
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      background: rgba(255,255,255,.11);
+      border: 1px solid rgba(255,255,255,.30);
+      box-shadow: 0 15px 40px rgba(0,0,0,.20);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 30px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.22);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(31px, 6vw, 64px);
+      line-height: 1.08;
+      text-transform: uppercase;
+      font-weight: 800;
+      text-shadow: 0 5px 25px rgba(0,0,0,.22);
+    }
+
+    .school-name {
+      margin-top: 16px;
+      color: var(--soft);
+      font-size: clamp(16px, 2.5vw, 25px);
+      letter-spacing: 3px;
+      font-weight: 600;
+    }
+
+    .coming-card,
+    .principal-section {
+      background: rgba(255,255,255,.10);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,.20);
+      border-radius: 28px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.25);
+    }
+
+    .coming-card {
+      text-align: center;
+      padding: 45px 30px;
+      margin-bottom: 38px;
+    }
+
+    .construction {
+      font-size: 58px;
+      margin-bottom: 10px;
+    }
+
+    .coming-card h2 {
+      font-size: clamp(25px, 4vw, 38px);
+      margin-bottom: 15px;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin: 0 auto;
+      color: var(--soft);
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .loader {
+      width: 100px;
+      height: 6px;
+      margin: 27px auto 0;
+      border-radius: 20px;
+      background: rgba(255,255,255,.18);
+      overflow: hidden;
+    }
+
+    .loader::after {
+      content: "";
+      display: block;
+      width: 40%;
+      height: 100%;
+      background: #fff;
+      border-radius: 20px;
+      animation: loading 1.5s infinite ease-in-out;
+    }
+
+    @keyframes loading {
+      0% { transform: translateX(-130%); }
+      100% { transform: translateX(280%); }
+    }
+
+    .principal-section {
+      display: flex;
+      align-items: center;
+      gap: 45px;
+      padding: 35px;
+      margin-bottom: 38px;
+    }
+
+    .principal-photo {
+      flex: 0 0 330px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 15px 40px rgba(0,0,0,.30);
+    }
+
+    .principal-photo img {
+      display: block;
+      width: 100%;
+      height: auto;
+      image-rendering: auto;
+    }
+
+    .principal-content {
+      flex: 1;
+    }
+
+    .section-label {
+      font-size: 12px;
+      letter-spacing: 3px;
+      font-weight: bold;
+      opacity: .75;
+      margin-bottom: 12px;
+    }
+
+    .principal-content h2 {
+      font-size: clamp(27px, 4vw, 38px);
+      line-height: 1.15;
+      margin-bottom: 22px;
+    }
+
+    .principal-content p {
+      color: #edf7ff;
+      line-height: 1.8;
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
+
+    .principal-signature {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,.25);
+    }
+
+    .principal-signature strong {
+      display: block;
+      font-size: 21px;
+    }
+
+    .principal-signature span {
+      display: block;
+      margin-top: 5px;
+      font-size: 15px;
+    }
+
+    .principal-signature small {
+      display: block;
+      margin-top: 5px;
+      opacity: .7;
+      line-height: 1.5;
+    }
+
+    .pride {
+      text-align: center;
+      font-size: clamp(17px, 3vw, 24px);
+      font-weight: bold;
+      letter-spacing: 1px;
+      line-height: 1.6;
+      padding: 0 15px 25px;
+    }
+
+    footer {
+      text-align: center;
+      color: #c4dceb;
+      font-size: 13px;
+      line-height: 1.8;
+      padding-bottom: 10px;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: 94%;
+        padding-top: 30px;
+      }
+
+      .coming-card {
+        padding: 35px 20px;
+      }
+
+      .principal-section {
+        flex-direction: column;
+        padding: 22px;
+        gap: 27px;
+      }
+
+      .principal-photo {
+        width: 100%;
+        max-width: 330px;
+        flex-basis: auto;
+      }
+
+      .principal-content {
+        text-align: center;
+      }
+
+      .principal-signature {
+        text-align: center;
+      }
+
+      .school-name {
+        letter-spacing: 1.5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <header class="hero">
+      <div class="badge">🎓</div>
+
+      <div class="tag">PM SHRI TGMS</div>
+
+      <h1>Website Under Development</h1>
+
+      <div class="school-name">
+        TGMS MODEL SCHOOL • PEGADAPALLY
+      </div>
+    </header>
+
+    <section class="coming-card">
+      <div class="construction">🚧</div>
+
+      <h2>Something Great Is Coming</h2>
+
+      <p class="intro">
+        Our official school website is currently under development.
+        We are working with dedication and pride to create a modern
+        digital platform for our students, teachers, parents and our
+        entire school community.
+      </p>
+
+      <div class="loader"></div>
+    </section>
+
+    <section class="principal-section">
+
+      <div class="principal-photo">
+        <img
+          src="principal.jpg"
+          alt="Principal - Kotha Prabhakar Reddy"
+        >
+      </div>
+
+      <div class="principal-content">
+        <div class="section-label">MESSAGE FROM THE PRINCIPAL</div>
+
+        <h2>Building the Future with Pride</h2>
+
+        <p>
+          It gives me immense pride to welcome you to the digital journey
+          of <strong>PM SHRI TGMS MODEL SCHOOL, PEGADAPALLY.</strong>
+        </p>
+
+        <p>
+          Our official website is currently under development. We are
+          working with dedication to create a modern digital platform
+          that reflects our school's commitment to excellence, innovation,
+          discipline and holistic education.
+        </p>
+
+        <p>
+          Through this platform, we look forward to sharing our academic
+          achievements, student accomplishments, activities, events,
+          announcements and the many moments that make our school
+          community special.
+        </p>
+
+        <p>
+          We are developing this website with pride and with a vision
+          for a brighter digital future for our students.
+        </p>
+
+        <div class="principal-signature">
+          <strong>Kotha Prabhakar Reddy</strong>
+          <span>Principal</span>
+          <small>PM SHRI TGMS MODEL SCHOOL, PEGADAPALLY</small>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="pride">
+      🇮🇳 Developing with Pride • Learning with Purpose • Growing with Excellence
+    </div>
+
+    <footer>
+      © PM SHRI TGMS MODEL SCHOOL, PEGADAPALLY<br>
+      Official School Website • Coming Soon
+    </footer>
+
+  </main>
+</body>
+</html>
