@@ -1,8 +1,0 @@
-{
-  "name": "TGMS Pegadapally Portal",
-  "short_name": "TGMS Portal",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#0a192f",
-  "theme_color": "#1e3a8a"
-}
