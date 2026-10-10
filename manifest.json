@@ -1,0 +1,19 @@
+{
+  "name": "PM SHRI TGMS Pegadapally",
+  "short_name": "TGMS Pegadapally",
+  "description": "PM SHRI Telangana Government Model School and Junior College, Pegadapally",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f8fc",
+  "theme_color": "#092f56",
+  "icons": [
+    {
+      "src": "assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
