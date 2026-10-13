@@ -1,0 +1,24 @@
+{
+  "name": "PM SHRI TGMS Pegadapally",
+  "short_name": "TGMS Pegadapally",
+  "description": "School information and portal for PM SHRI TGMS Pegadapally",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f9fd",
+  "theme_color": "#102a5e",
+  "icons": [
+    {
+      "src": "assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
