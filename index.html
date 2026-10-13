@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TGMS Pegadapally - Official Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { tgBlue: '#1a365d', tgOrange: '#ed8936', tgLight: '#f7fafc' } }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #f3f4f6; scroll-behavior: smooth; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .fade-in { animation: fadeIn 0.4s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-section { display: none !important; }
+        .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .ticker-wrap { width: 100%; background-color: #e53e3e; overflow: hidden; height: 40px; color: white; display: flex; align-items: center; }
+        .ticker { display: inline-block; white-space: nowrap; padding-right: 100%; box-sizing: content-box; animation-iteration-count: infinite; animation-timing-function: linear; animation-name: ticker; animation-duration: 20s; }
+        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+    <!-- Header -->
+    <header class="bg-tgBlue text-white sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <!-- State Emblem -->
+                <img src="71951.jpg" alt="TG Emblem" class="h-12 w-12 object-contain bg-white rounded-full p-1 shadow">
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide">TGMS Pegadapally</h1>
+                    <p class="text-xs text-blue-200">Telangana Model School & Jr College</p>
+                </div>
+            </div>
+            <nav class="flex gap-4 items-center">
+                <button id="nav-home-btn" class="hover:text-tgOrange transition font-semibold">Home</button>
+                <a href="#public-gallery" class="hover:text-tgOrange transition font-semibold hidden md:block">Gallery</a>
+                <button id="open-login-btn" class="bg-tgOrange hover:bg-orange-600 px-4 py-2 rounded shadow transition font-bold text-sm md:text-base">Portal Login</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Flash Notice Ticker -->
+    <div id="flash-notice-container" class="ticker-wrap hidden">
+        <div class="ticker font-bold text-sm" id="flash-notice-text"></div>
+    </div>
+    <!-- MAIN PUBLIC VIEW -->
+    <main id="public-view" class="fade-in">
+        <!-- Hero Section -->
+        <section class="relative bg-tgBlue text-white text-center py-20 bg-cover bg-center" style="background-image: linear-gradient(rgba(26,54,93,0.85), rgba(26,54,93,0.85)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1');">
+            <div class="container mx-auto px-4 relative z-10">
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Welcome to TGMS Pegadapally</h2>
+                <p class="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto mb-6">Empowering the future generation with quality education and excellent infrastructure.</p>
+                <span class="inline-block bg-white text-tgBlue px-4 py-1 rounded-full text-sm font-bold shadow">UDISE Code: 36061601112</span>
+            </div>
+        </section>
+        <!-- Public Notice Board -->
+        <section class="container mx-auto px-4 py-8">
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded shadow-sm">
+                <h3 class="text-lg font-bold text-yellow-800 mb-2"><i class="fas fa-bullhorn mr-2"></i>Official Notice Board</h3>
+                <ul id="public-notice-list" class="list-disc pl-5 text-gray-700 text-sm space-y-1">
+                    <li>Welcome to the new academic year 2026-2027.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Admissions Section -->
+        <section id="admissions-public" class="container mx-auto px-4 py-4 hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-green-500 card-hover">
+                <h3 class="text-2xl font-bold text-tgBlue mb-4 text-center">Admissions are OPEN</h3>
+                <form id="public-admission-form" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+                    <input type="text" id="adm-name" placeholder="Student Full Name" class="border p-3 rounded w-full focus:ring-2 focus:ring-green-400 outline-none" required>
+                    <input type="tel" id="adm-mobile" placeholder="Mobile Number" class="border p-3 rounded w-full focus:ring-2 focus:ring-green-400 outline-none" required>
+                    <select id="adm-class" class="border p-3 rounded w-full outline-none" required>
+                        <option value="">Select Class to Apply</option>
+                        <option value="6">Class 6</option><option value="11-MPC">Inter 1st Yr (MPC)</option>
+                    </select>
+                    <input type="text" id="adm-prev-school" placeholder="Previous School Name" class="border p-3 rounded w-full outline-none" required>
+                    <input type="number" id="adm-prev-marks" placeholder="Previous Marks/GPA" class="border p-3 rounded w-full outline-none" required>
+                    <button type="submit" class="md:col-span-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded shadow transition">Submit Application</button>
+                </form>
+                <div id="adm-success-msg" class="text-center text-green-600 font-bold mt-4 hidden"></div>
+            </div>
+        </section>
+        <!-- Messages Section -->
+        <section class="container mx-auto px-4 py-12">
+            <div class="text-center mb-10"><h3 class="text-3xl font-bold text-tgBlue inline-block border-b-4 border-tgOrange pb-2">Leadership Messages</h3></div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-md p-8 card-hover relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-tgOrange"></div>
+                    <h4 class="text-xl font-bold text-tgBlue mb-4">Message to Parents</h4>
+                    <p class="text-gray-600 italic leading-relaxed">"Welcome to our school community. We believe in fostering a strong partnership between the school and parents to ensure the holistic development of every student. Your involvement and support are crucial to our shared success."</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-md p-8 card-hover relative overflow-hidden flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-tgBlue"></div>
+                    <img src="69269.jpg" alt="Principal" class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-gray-100 flex-shrink-0">
+                    <div class="text-center sm:text-left">
+                        <h4 class="text-xl font-bold text-tgBlue mb-2">From the Principal's Desk</h4>
+                        <p class="text-gray-600 italic text-sm mb-3">"Education is the most powerful weapon which you can use to change the world. At TGMS Pegadapally, we ignite curiosity and build character."</p>
+                        <p class="font-bold text-gray-800">- Prabhakar Reddy Kotha</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Academics Section -->
+        <section class="bg-white py-12 border-t border-gray-200">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-10"><h3 class="text-3xl font-bold text-tgBlue inline-block border-b-4 border-tgOrange pb-2">Academics Offered</h3></div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="border p-6 rounded-xl shadow-sm card-hover bg-gray-50">
+                        <h4 class="text-xl font-bold text-tgBlue mb-4 flex items-center"><i class="fas fa-school mr-2"></i>High School (Classes 6-10)</h4>
+                        <p class="text-gray-600 mb-4 text-sm">Comprehensive foundational education ensuring a strong grasp of core subjects.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="bg-blue-200 text-blue-900 px-3 py-1 rounded-full text-sm font-semibold shadow-sm">Class 6</span>
+                            <span class="bg-blue-200 text-blue-900 px-3 py-1 rounded-full text-sm font-semibold shadow-sm">Class 7</span>
+                            <span class="bg-blue-200 text-blue-900 px-3 py-1 rounded-full text-sm font-semibold shadow-sm">Class 8</span>
+                            <span class="bg-blue-200 text-blue-900 px-3 py-1 rounded-full text-sm font-semibold shadow-sm">Class 9</span>
+                            <span class="bg-blue-200 text-blue-900 px-3 py-1 rounded-full text-sm font-semibold shadow-sm">Class 10</span>
+                        </div>
+                    </div>
+                    <div class="border p-6 rounded-xl shadow-sm card-hover bg-gray-50">
+                        <h4 class="text-xl font-bold text-tgBlue mb-4 flex items-center"><i class="fas fa-university mr-2"></i>Junior College (Intermediate)</h4>
+                        <p class="text-gray-600 mb-4 text-sm">Specialized 1st & 2nd year streams to prepare students for careers.</p>
+                        <ul class="space-y-2 text-gray-700 text-sm font-medium">
+                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i><strong>MPC</strong> (Maths, Physics, Chemistry)</li>
+                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i><strong>BiPC</strong> (Biology, Physics, Chemistry)</li>
+                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i><strong>CEC</strong> (Civics, Economics, Commerce)</li>
+                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i><strong>ACE</strong> Courses</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Infrastructure Section -->
+        <section class="container mx-auto px-4 py-12">
+            <div class="text-center mb-10"><h3 class="text-3xl font-bold text-tgBlue inline-block border-b-4 border-tgOrange pb-2">Our Infrastructure</h3></div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow card-hover text-center"><i class="fas fa-desktop text-4xl text-blue-500 mb-3"></i><h4 class="font-bold text-gray-800">Computer Lab</h4></div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover text-center"><i class="fas fa-magnet text-4xl text-purple-500 mb-3"></i><h4 class="font-bold text-gray-800">Physics Lab</h4></div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover text-center"><i class="fas fa-flask text-4xl text-green-500 mb-3"></i><h4 class="font-bold text-gray-800">Chemistry Lab</h4></div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover text-center"><i class="fas fa-leaf text-4xl text-emerald-500 mb-3"></i><h4 class="font-bold text-gray-800">Botany Lab</h4></div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover text-center"><i class="fas fa-paw text-4xl text-yellow-600 mb-3"></i><h4 class="font-bold text-gray-800">Zoology Lab</h4></div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover text-center"><i class="fas fa-futbol text-4xl text-orange-500 mb-3"></i><h4 class="font-bold text-gray-800">Sports Ground</h4></div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover text-center"><i class="fas fa-table-tennis text-4xl text-red-500 mb-3"></i><h4 class="font-bold text-gray-800">Indoor Games</h4></div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover text-center"><i class="fas fa-projector text-4xl text-indigo-500 mb-3"></i><h4 class="font-bold text-gray-800">Digital Rooms</h4></div>
+            </div>
+        </section>
+        <!-- Houses Section -->
+        <section class="bg-white py-12 border-t border-gray-200">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-10"><h3 class="text-3xl font-bold text-tgBlue inline-block border-b-4 border-tgOrange pb-2">School Houses</h3></div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-white">
+                    <div class="bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-xl shadow card-hover"><h4 class="font-bold text-lg">Shakuntala Devi</h4><p class="text-xs mt-1 opacity-90 uppercase tracking-wider">Human Computer</p></div>
+                    <div class="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl shadow card-hover"><h4 class="font-bold text-lg">Rabindranath Tagore</h4><p class="text-xs mt-1 opacity-90 uppercase tracking-wider">Literary & Arts</p></div>
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl shadow card-hover"><h4 class="font-bold text-lg">CV Raman</h4><p class="text-xs mt-1 opacity-90 uppercase tracking-wider">Scientific Innovation</p></div>
+                    <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl shadow card-hover"><h4 class="font-bold text-lg">Abdul Kalam</h4><p class="text-xs mt-1 opacity-90 uppercase tracking-wider">Visionary Leadership</p></div>
+                </div>
+            </div>
+        </section>
+        <!-- Dynamic Photo Gallery Section -->
+        <section id="public-gallery" class="container mx-auto px-4 py-12">
+            <div class="text-center mb-10"><h3 class="text-3xl font-bold text-tgBlue inline-block border-b-4 border-tgOrange pb-2"><i class="fas fa-images mr-2"></i>Campus Gallery</h3></div>
+            <div id="gallery-grid-public" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Firebase Storage images will be injected here automatically -->
+                <p class="col-span-full text-center text-gray-500 italic" id="gallery-loading">Loading images from database...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-tgBlue text-white pt-10 pb-6 border-t-4 border-tgOrange">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-gray-600 pb-6">
+            <div class="text-center md:text-left">
+                <h4 class="font-bold text-xl mb-2 text-tgOrange">Contact Principal</h4>
+                <p class="font-semibold">Prabhakar Reddy Kotha</p>
+                <p class="text-gray-300"><i class="fas fa-phone-alt mr-2"></i>+91 81794 98584</p>
+                <p class="text-gray-300 mt-2"><i class="fas fa-map-marker-alt mr-2"></i>Pegadapally, Jagtial District, Telangana</p>
+            </div>
+            <div class="bg-white p-3 rounded-lg shadow-lg">
+                <img src="70592.png" alt="PM SHRI" class="h-16 object-contain">
+            </div>
+        </div>
+        <div class="text-center mt-6 text-sm text-gray-400">
+            <p>Official Web Portal Designed & Administered by <strong class="text-white">Sainarasimha Rao</strong></p>
+        </div>
+    </footer>
+    <!-- AUTH MODAL (SECURE) -->
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex justify-center items-center z-[100] backdrop-blur-sm transition-opacity">
+        <div class="glass-panel p-8 rounded-2xl w-full max-w-md relative fade-in border-t-8 border-tgBlue">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl transition"><i class="fas fa-times-circle"></i></button>
+            <h2 id="auth-title" class="text-2xl font-extrabold text-tgBlue mb-2 text-center">Secure Portal Login</h2>
+            <p class="text-center text-sm text-gray-500 mb-6">Your dashboard will load automatically based on your ID.</p>
+            
+            <div id="auth-forms" class="space-y-4">
+                <input type="email" id="auth-email" placeholder="Registered Email Address" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-tgBlue outline-none bg-gray-50" required>
+                <input type="password" id="auth-password" placeholder="Password" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-tgBlue outline-none bg-gray-50" required>
+                <button id="login-submit-btn" class="w-full bg-tgBlue hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-md transition mt-2">Login to Dashboard</button>
+                <div id="auth-status" class="text-center text-sm font-bold mt-2"></div>
+            </div>
+        </div>
+    </div>
+    <!-- ADMIN / PRINCIPAL DASHBOARD -->
+    <div id="admin-dashboard" class="hidden-section container mx-auto px-4 py-8 fade-in">
+        <div class="flex flex-col md:flex-row justify-between items-center bg-white p-5 rounded-xl shadow-md mb-6 border-l-4 border-tgBlue">
+            <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-user-shield text-tgBlue mr-2"></i>Principal Dashboard</h2>
+            <button class="logout-btn mt-4 md:mt-0 bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg shadow font-bold transition"><i class="fas fa-sign-out-alt mr-2"></i>Logout</button>
+        </div>
+        
+        <!-- Admin Navigation Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-2 mb-6">
+            <button onclick="switchAdminTab('admin-notices')" class="bg-gray-200 hover:bg-tgBlue hover:text-white transition px-4 py-3 rounded-lg font-semibold text-sm shadow-sm">Notices</button>
+            <button onclick="switchAdminTab('admin-admissions')" class="bg-gray-200 hover:bg-tgBlue hover:text-white transition px-4 py-3 rounded-lg font-semibold text-sm shadow-sm">Admissions</button>
+            <button onclick="switchAdminTab('admin-search')" class="bg-gray-200 hover:bg-tgBlue hover:text-white transition px-4 py-3 rounded-lg font-semibold text-sm shadow-sm">Search DB</button>
+            <button onclick="switchAdminTab('admin-queries')" class="bg-gray-200 hover:bg-tgBlue hover:text-white transition px-4 py-3 rounded-lg font-semibold text-sm shadow-sm">Queries</button>
+            <button onclick="switchAdminTab('admin-substitute')" class="bg-gray-200 hover:bg-tgBlue hover:text-white transition px-4 py-3 rounded-lg font-semibold text-sm shadow-sm">Sub Desk</button>
+            <button onclick="switchAdminTab('admin-gallery-manage')" class="bg-gray-200 hover:bg-tgBlue hover:text-white transition px-4 py-3 rounded-lg font-semibold text-sm shadow-sm">Gallery Data</button>
+        </div>
+        <!-- Admin Tab: Notices -->
+        <div id="admin-notices" class="admin-tab bg-white p-6 rounded-xl shadow-md border-t-4 border-gray-300">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-broadcast-tower mr-2"></i>Manage Notice Board</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-sm text-gray-700 mb-2">Standard Notice</h4>
+                    <input type="text" id="admin-notice-input" placeholder="Type general notice..." class="border w-full p-3 rounded mb-3 outline-none focus:ring-2 focus:ring-tgBlue">
+                    <button class="bg-tgBlue hover:bg-blue-800 text-white font-bold px-4 py-2 rounded w-full transition">Post Notice</button>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-sm text-red-700 mb-2">Urgent Flash Notice (Scrolling)</h4>
+                    <input type="text" id="admin-flash-input" placeholder="Urgent alert text..." class="border w-full p-3 rounded mb-3 outline-none focus:ring-2 focus:ring-red-400">
+                    <div class="flex gap-2">
+                        <button class="bg-red-600 hover:bg-red-700 font-bold text-white px-4 py-2 rounded flex-1 transition">Set Flash</button>
+                        <button class="bg-gray-600 hover:bg-gray-700 font-bold text-white px-4 py-2 rounded flex-1 transition">Turn Off</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Tab: Admissions -->
+        <div id="admin-admissions" class="admin-tab hidden-section bg-white p-6 rounded-xl shadow-md border-t-4 border-gray-300">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h3 class="text-xl font-bold"><i class="fas fa-users mr-2"></i>Admission Manager</h3>
+                <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition">Toggle Admissions (ON)</button>
+            </div>
+            <div class="overflow-x-auto rounded-lg border">
+                <table class="w-full text-left border-collapse">
+                    <thead><tr class="bg-gray-100"><th class="p-3 border-b font-bold">ID</th><th class="p-3 border-b font-bold">Name</th><th class="p-3 border-b font-bold">Class</th><th class="p-3 border-b font-bold">Status</th><th class="p-3 border-b font-bold">Action</th></tr></thead>
+                    <tbody id="admin-admission-table-body" class="text-sm">
+                        <!-- Dynamic Applications go here -->
+                        <tr><td colspan="5" class="p-4 text-center text-gray-500">No applications received yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Admin Tab: Search DB & Queries -->
+        <div id="admin-search" class="admin-tab hidden-section bg-white p-6 rounded-xl shadow border-t-4 border-gray-300">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-search mr-2"></i>Master Database Search</h3>
+            <input type="text" placeholder="Search Student/Teacher by Name, Roll, or Phone..." class="w-full border p-3 rounded mb-4 focus:ring-2 focus:ring-tgBlue outline-none">
+            <div class="p-8 bg-gray-50 rounded-lg text-center text-gray-500 italic border border-dashed">Search results and comprehensive marks breakdown will appear here.</div>
+        </div>
+
+        <div id="admin-queries" class="admin-tab hidden-section bg-white p-6 rounded-xl shadow border-t-4 border-gray-300">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-envelope-open-text mr-2"></i>Direct Queries to Principal</h3>
+            <div class="p-4 bg-blue-50 text-blue-800 rounded-lg border border-blue-100 text-sm">No new queries from students today.</div>
+        </div>
+
+        <!-- Admin Tab: Substitution Desk (SMS System) -->
+        <div id="admin-substitute" class="admin-tab hidden-section bg-white p-6 rounded-xl shadow border-t-4 border-gray-300">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-exchange-alt mr-2"></i>Period Substitution Desk (SMS)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg border">
+                <select id="sub-period" class="border p-3 rounded outline-none"><option>Period 1</option><option>Period 2</option><option>Period 8</option></select>
+                <input type="text" id="sub-absent" placeholder="Absent Teacher Name" class="border p-3 rounded outline-none">
+                <select id="sub-assign" class="border p-3 rounded outline-none">
+                    <option value="">Select Sub Teacher</option>
+                    <option value="9876543210">John Doe (9876543210)</option>
+                </select>
+                <button onclick="triggerSMS()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded shadow transition"><i class="fas fa-sms mr-2"></i>Send SMS Alert</button>
+            </div>
+            <p class="text-xs text-gray-500 mt-2 italic">* Clicking "Send SMS Alert" will natively open your phone's default messaging app with the text pre-filled.</p>
+        </div>
+        <!-- Admin Tab: Manage Gallery -->
+        <div id="admin-gallery-manage" class="admin-tab hidden-section bg-white p-6 rounded-xl shadow border-t-4 border-gray-300">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-cloud-upload-alt mr-2"></i>Upload to Firebase Gallery</h3>
+            <div class="bg-gray-50 p-6 rounded-lg border mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Select Image</label>
+                        <input type="file" id="admin-gallery-file" accept="image/*" class="w-full border p-2 bg-white rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Photo Caption</label>
+                        <input type="text" id="admin-gallery-caption" placeholder="e.g. Science Fair 2026" class="w-full border p-2 rounded outline-none">
+                    </div>
+                    <button onclick="uploadGalleryPhoto()" class="bg-tgOrange hover:bg-orange-600 text-white font-bold py-2 px-4 rounded shadow transition">Upload Photo</button>
+                </div>
+                <div id="gallery-upload-status" class="mt-3 text-sm font-bold"></div>
+            </div>
+            
+            <div class="flex justify-between items-center bg-gray-100 p-4 rounded-lg mt-8">
+                <h3 class="text-lg font-bold"><i class="fas fa-file-export mr-2"></i>Attendance Reports</h3>
+                <button class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-bold shadow transition"><i class="fas fa-file-excel mr-2"></i>Export Last 90 Days</button>
+            </div>
+        </div>
+    </div>
+    <!-- TEACHER DASHBOARD -->
+    <div id="teacher-dashboard" class="hidden-section container mx-auto px-4 py-8 fade-in">
+        <div class="flex flex-col md:flex-row justify-between items-center bg-white p-5 rounded-xl shadow-md mb-6 border-l-4 border-tgOrange">
+            <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-chalkboard-teacher text-tgOrange mr-2"></i>Teacher Portal</h2>
+            <button class="logout-btn mt-4 md:mt-0 bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg shadow font-bold transition"><i class="fas fa-sign-out-alt mr-2"></i>Logout</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Profile Column -->
+            <div class="bg-white p-6 rounded-xl shadow border-t-2 border-gray-200">
+                <h3 class="font-bold text-lg border-b pb-2 mb-4">My Profile (Syncs to Sub Desk)</h3>
+                <input type="text" placeholder="Teacher Name" class="w-full border p-3 rounded mb-3 bg-gray-50">
+                <input type="text" placeholder="Employee Code" class="w-full border p-3 rounded mb-3 bg-gray-50">
+                <input type="tel" placeholder="Mobile Number (For SMS)" class="w-full border p-3 rounded mb-3 focus:ring-2 focus:ring-tgOrange outline-none">
+                <input type="text" placeholder="Qualifications" class="w-full border p-3 rounded mb-4 bg-gray-50">
+                <button class="w-full bg-tgOrange hover:bg-orange-600 text-white py-3 rounded-lg font-bold shadow transition">Update Profile</button>
+            </div>
+
+            <!-- Management Column -->
+            <div class="md:col-span-2 space-y-6">
+                <!-- Assign House -->
+                <div class="bg-white p-6 rounded-xl shadow border-t-2 border-gray-200">
+                    <h3 class="font-bold text-lg border-b pb-2 mb-4">Assign Student Houses</h3>
+                    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                        <select class="border p-3 rounded flex-1 outline-none"><option>Select Class</option><option>Inter 1st Yr MPC</option></select>
+                        <select class="border p-3 rounded flex-1 outline-none"><option>Select Section</option><option>A</option></select>
+                        <button class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg font-bold transition">Load List</button>
+                    </div>
+                    <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-800 italic">Select class to assign Shakuntala Devi, Tagore, Raman, or Kalam house to students.</div>
+                </div>
+                <!-- Smart Attendance -->
+                <div class="bg-white p-6 rounded-xl shadow border-t-2 border-gray-200">
+                    <h3 class="font-bold text-lg border-b pb-2 mb-4 flex justify-between items-center">
+                        <span>Smart Attendance (Daily Reset)</span>
+                        <span class="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold border border-green-300">All Present Default</span>
+                    </h3>
+                    <div class="flex gap-2 mb-4 border-b pb-4">
+                        <button class="bg-blue-100 text-blue-800 px-5 py-2 rounded-lg font-bold text-sm hover:bg-blue-200 transition">Present Tab</button>
+                        <button class="bg-red-100 text-red-800 px-5 py-2 rounded-lg font-bold text-sm hover:bg-red-200 transition">Absentees Tab</button>
+                    </div>
+                    <div class="p-4 bg-gray-50 border rounded-lg text-sm text-gray-500 italic">Load class. Click a student's name to instantly move them to the Absentees list.</div>
+                </div>
+
+                <!-- Marks Entry -->
+                <div class="bg-white p-6 rounded-xl shadow border-t-2 border-gray-200">
+                    <h3 class="font-bold text-lg border-b pb-2 mb-4">Grading & Marks Entry</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <select class="border p-3 rounded outline-none"><option>Select Class/Group</option></select>
+                        <select class="border p-3 rounded outline-none">
+                            <option>Exam Type</option>
+                            <option>FA 1/2/3/4 (Max 20)</option>
+                            <option>SA 1/2 (Max 80 / Sci 40)</option>
+                            <option>Inter Month End (Max 30)</option>
+                            <option>Inter Half Year (Max 80)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Student Sensitive Data Update -->
+        <div class="mt-6 bg-white p-8 rounded-xl shadow border-t-4 border-red-500">
+            <h3 class="font-bold text-xl border-b pb-2 mb-2 text-red-600"><i class="fas fa-id-card-alt mr-2"></i>Update Student Master Data</h3>
+            <p class="text-sm text-gray-500 mb-6">Type "NA" if not applicable. Required fields for official institutional records.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <input type="text" placeholder="Student Name" class="border p-3 rounded outline-none focus:ring-2 focus:ring-red-300">
+                <input type="text" placeholder="Mother's Name" class="border p-3 rounded outline-none">
+                <input type="text" placeholder="Father's Name" class="border p-3 rounded outline-none">
+                <input type="text" placeholder="Mother's Aadhaar (or NA)" class="border p-3 rounded outline-none">
+                <input type="text" placeholder="Father's Aadhaar (or NA)" class="border p-3 rounded outline-none">
+                <input type="text" placeholder="Student's Aadhaar (or NA)" class="border p-3 rounded outline-none">
+                <input type="text" placeholder="APAAR ID" class="border p-3 rounded outline-none font-mono">
+                <input type="text" placeholder="PEN (Perm. Ed. Number)" class="border p-3 rounded outline-none font-mono">
+                <input type="tel" placeholder="Parent Mobile Number" class="border p-3 rounded outline-none">
+            </div>
+            <button class="mt-6 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition w-full md:w-auto">Save Student Records</button>
+        </div>
+    </div>
+
+    <!-- STUDENT DASHBOARD -->
+    <div id="student-dashboard" class="hidden-section container mx-auto px-4 py-8 fade-in">
+        <div class="flex flex-col md:flex-row justify-between items-center bg-white p-5 rounded-xl shadow-md mb-6 border-l-4 border-green-500">
+            <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-user-graduate text-green-500 mr-2"></i>Student Dashboard</h2>
+            <button class="logout-btn mt-4 md:mt-0 bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg shadow font-bold transition"><i class="fas fa-sign-out-alt mr-2"></i>Logout</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Academics & Status -->
+            <div class="bg-white p-6 rounded-xl shadow border-t-2 border-gray-200">
+                <h3 class="font-bold text-xl border-b pb-2 mb-4 text-tgBlue">My Academics</h3>
+                <div class="bg-blue-50 p-5 rounded-lg mb-5 border border-blue-100">
+                    <p class="text-lg"><strong>Today's Attendance:</strong> <span class="text-green-600 font-extrabold bg-green-100 px-2 py-1 rounded">Present</span></p>
+                    <button class="mt-3 text-sm text-blue-700 font-bold hover:underline bg-transparent border-none cursor-pointer"><i class="fas fa-history mr-1"></i>View Previous 90 Days</button>
+                </div>
+                <p class="mb-4 text-lg"><strong>Assigned House:</strong> <span class="font-bold text-blue-600">CV Raman</span></p>
+                <div class="mt-6 border-t pt-4">
+                    <h4 class="font-bold text-gray-800 mb-2">My Gradebook</h4>
+                    <p class="text-sm text-gray-500 italic bg-gray-50 p-3 rounded border">Select exam to view subject-wise marks entered by teacher.</p>
+                </div>
+            </div>
+
+            <!-- Profile & Correction Requests -->
+            <div class="bg-white p-6 rounded-xl shadow border-t-2 border-gray-200">
+                <h3 class="font-bold text-xl border-b pb-2 mb-4 text-tgBlue">My Profile & Services</h3>
+                <ul class="text-sm space-y-3 mb-6 text-gray-700 bg-gray-50 p-4 rounded-lg border">
+                    <li><strong class="text-gray-900">Parents:</strong> [Loaded from Teacher Data]</li>
+                    <li><strong class="text-gray-900">IDs (PEN/APAAR/Aadhar):</strong> [Loaded securely]</li>
+                </ul>
+                <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-3 rounded-lg text-sm font-bold w-full mb-6 shadow transition">Report Mistake in Profile to Teacher</button>
+                
+                <div class="border-t pt-6">
+                    <h4 class="font-bold text-gray-800 mb-3"><i class="fas fa-comment-dots mr-2"></i>Direct Query to Principal</h4>
+                    <textarea placeholder="Type your private query to the admin here..." class="w-full border p-3 rounded-lg text-sm mb-3 outline-none focus:ring-2 focus:ring-tgBlue bg-gray-50" rows="3"></textarea>
+                    <button class="bg-tgBlue hover:bg-blue-800 text-white px-4 py-3 rounded-lg text-sm w-full font-bold shadow transition">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- APPLICATION LOGIC & FIREBASE SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
+        import { getDatabase, ref as dbRef, push, set, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        // User Provided Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmNV0qJNRSRGZmy1nWyhzas3SvaAkkIdo",
+            authDomain: "tgms-pegadapally.firebaseapp.com",
+            databaseURL: "https://tgms-pegadapally-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "tgms-pegadapally",
+            storageBucket: "tgms-pegadapally.firebasestorage.app",
+            messagingSenderId: "521357144307",
+            appId: "1:521357144307:web:52e24c6eb8dc6250b28786",
+            measurementId: "G-HR1E130JQQ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const storage = getStorage(app);
+        const database = getDatabase(app);
+
+        // UI Routing Elements
+        const publicView = document.getElementById('public-view');
+        const authModal = document.getElementById('auth-modal');
+        const loginBtn = document.getElementById('open-login-btn');
+        const homeBtn = document.getElementById('nav-home-btn');
+        const dashboards = {
+            'student': document.getElementById('student-dashboard'),
+            'teacher': document.getElementById('teacher-dashboard'),
+            'admin': document.getElementById('admin-dashboard')
+        };
+
+        // Navigation Toggles
+        loginBtn.addEventListener('click', () => authModal.classList.remove('hidden'));
+        document.getElementById('close-modal').addEventListener('click', () => authModal.classList.add('hidden'));
+        
+        homeBtn.addEventListener('click', () => {
+            Object.values(dashboards).forEach(d => d.classList.add('hidden-section'));
+            publicView.classList.remove('hidden-section');
+            loginBtn.innerText = "Portal Login";
+        });
+
+        // SECURE LOGIN & ROLE CHECK LOGIC
+        document.getElementById('login-submit-btn').addEventListener('click', async () => {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const stat = document.getElementById('auth-status');
+            
+            if(!email || !password) {
+                stat.innerText = "Please enter email and password."; stat.style.color = "red"; return;
+            }
+
+            stat.innerText = "Authenticating securely..."; stat.style.color = "blue";
+            
+            try {
+                // 1. Authenticate with Firebase
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. Check the user's role in Realtime Database
+                const dbRefObj = dbRef(database);
+                const snapshot = await get(child(dbRefObj, `users/${user.uid}`));
+                
+                if(snapshot.exists()) {
+                    const userData = snapshot.val();
+                    const secureRole = userData.role; // This must equal "admin", "teacher", or "student"
+                    
+                    if(['admin', 'teacher', 'student'].includes(secureRole)) {
+                        // 3. Role is valid, route to the correct dashboard
+                        authModal.classList.add('hidden');
+                        publicView.classList.add('hidden-section');
+                        Object.values(dashboards).forEach(d => d.classList.add('hidden-section'));
+                        
+                        dashboards[secureRole].classList.remove('hidden-section');
+                        loginBtn.innerText = "Log Out";
+                        stat.innerText = "";
+                        
+                        // Clear inputs
+                        document.getElementById('auth-email').value = "";
+                        document.getElementById('auth-password').value = "";
+                    } else {
+                        stat.innerText = "Access Denied: Invalid role assigned."; stat.style.color = "red";
+                        await signOut(auth);
+                    }
+                } else {
+                    stat.innerText = "Access Denied: No role found in database."; stat.style.color = "red";
+                    await signOut(auth);
+                }
+            } catch (error) {
+                stat.innerText = "Login Failed: " + error.message; stat.style.color = "red";
+            }
+        });
+
+        // Logout Listeners
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', async () => { 
+                await signOut(auth);
+                homeBtn.click(); 
+            });
+        });
+        // Global Functions for inline HTML onclick attributes
+        window.switchAdminTab = function(tabId) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden-section'));
+            document.getElementById(tabId).classList.remove('hidden-section');
+        };
+
+        // SMS Native Trigger
+        window.triggerSMS = function() {
+            const period = document.getElementById('sub-period').value;
+            const absentTeacher = document.getElementById('sub-absent').value || "a colleague";
+            const subDropdown = document.getElementById('sub-assign');
+            const subMobile = subDropdown.value; 
+            if(!subMobile || !absentTeacher) return alert("Please fill absent teacher and select a substitute.");
+            
+            const message = `Hello, you are assigned as a substitute for ${period} at TGMS Pegadapally, as ${absentTeacher} is absent.`;
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let smsUri = `sms:${subMobile}?body=${encodeURIComponent(message)}`;
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) smsUri = `sms:${subMobile}&body=${encodeURIComponent(message)}`;
+            window.location.href = smsUri;
+        };
+
+        // --- FIREBASE GALLERY LOGIC ---
+        
+        // 1. Upload logic (Admin)
+        window.uploadGalleryPhoto = async function() {
+            const fileInput = document.getElementById('admin-gallery-file');
+            const captionInput = document.getElementById('admin-gallery-caption');
+            const status = document.getElementById('gallery-upload-status');
+            const file = fileInput.files[0];
+            const caption = captionInput.value;
+
+            if(!file || !caption) {
+                status.innerText = "Error: Please provide both an image and a caption."; status.style.color = "red"; return;
+            }
+            status.innerText = "Uploading to Storage... Please wait."; status.style.color = "blue";
+
+            try {
+                // Upload to Storage
+                const imgRef = storageRef(storage, 'gallery/' + Date.now() + '_' + file.name);
+                await uploadBytes(imgRef, file);
+                const url = await getDownloadURL(imgRef);
+                
+                // Save link to Realtime DB
+                const metaRef = dbRef(database, 'gallery_metadata');
+                await set(push(metaRef), { url: url, caption: caption, timestamp: Date.now() });
+
+                status.innerText = "Upload Successful!"; status.style.color = "green";
+                fileInput.value = ""; captionInput.value = "";
+            } catch(e) {
+                status.innerText = "Upload Failed: " + e.message; status.style.color = "red";
+            }
+        };
+
+        // 2. Fetch and Render logic (Public)
+        const galleryGrid = document.getElementById('gallery-grid-public');
+        onValue(dbRef(database, 'gallery_metadata'), (snapshot) => {
+            galleryGrid.innerHTML = '';
+            if(snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    const data = child.val();
+                    galleryGrid.innerHTML += `
+                        <div class="bg-white rounded-xl shadow border p-2 card-hover">
+                            <img src="${data.url}" alt="Gallery Image" class="w-full h-48 object-cover rounded-lg mb-3">
+                            <p class="text-center font-bold text-gray-800 text-sm pb-2">${data.caption}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                galleryGrid.innerHTML = '<p class="col-span-full text-center text-gray-500">No photos available yet.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
